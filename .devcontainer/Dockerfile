@@ -54,8 +54,3 @@ RUN wget -O ~/starship.toml https://raw.githubusercontent.com/dr3dr3/dotfiles/re
 ENV ZDOTDIR=~
 ENV STARSHIP_CONFIG=~/starship.toml
 ENV STARSHIP_CACHE=~/.starship/cache
-RUN echo 'eval "$(starship init zsh)"' >> ~/.zshrc
-
-SHELL ["/bin/zsh", "-c"]
-
-CMD ["echo", "Hello from DR3DR3 ZSH!"]
