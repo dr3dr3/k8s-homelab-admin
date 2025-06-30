@@ -4,7 +4,7 @@ FROM alpine:${ALPINE_VERSION}
 LABEL maintainer="Andre Dreyer"
 
 # Install basic utilities
-RUN apk add --no-cache shadow zsh starship nano fzf eza bat nerd-fonts curl git gcompat openssl
+RUN apk add --no-cache shadow zsh starship nano fzf eza bat nerd-fonts curl wget git gcompat openssl
 RUN git config --global user.name "Andre Dreyer" && git config --global user.email "git@andredreyer.com"
 
 # Install 1Password CLI
@@ -51,16 +51,14 @@ RUN kubectl krew install ctx && \
 
 # Install and setup Starship for ZSH
 RUN curl -sS https://starship.rs/install.sh | sh -s -- -y
+RUN wget -O ~/.zshrc https://raw.githubusercontent.com/dr3dr3/dotfiles/refs/heads/main/zsh/zshrc
+RUN wget -O ~/.zshenv https://raw.githubusercontent.com/dr3dr3/dotfiles/refs/heads/main/zsh/zshenv
+RUN wget -O ~/aliases https://raw.githubusercontent.com/dr3dr3/dotfiles/refs/heads/main/zsh/aliases
+RUN wget -O ~/starship.toml https://raw.githubusercontent.com/dr3dr3/dotfiles/refs/heads/main/zsh/.config/starship.toml
 ENV ZDOTDIR=~
-RUN cat /workspaces/k8s-homelab-admin/shell/.zshrc >> ~/.zshrc
-ENV STARSHIP_CONFIG=~/.config/starship.toml
-RUN cat /workspaces/k8s-homelab-admin/shell/.config/starship.toml >> ~/.config/starship.toml
+ENV STARSHIP_CONFIG=~/starship.toml
 ENV STARSHIP_CACHE=~/.starship/cache
-RUN cat /workspaces/k8s-homelab-admin/shell/.zshenv >> ~/.zshenv
 RUN echo 'eval "$(starship init zsh)"' >> ~/.zshrc
 SHELL ["/usr/bin/zsh", "-l", "-c"]
-
-# Set ZSH as default shell
-# RUN chsh -s /bin/zsh
 
 ENTRYPOINT [ "zsh" ]
