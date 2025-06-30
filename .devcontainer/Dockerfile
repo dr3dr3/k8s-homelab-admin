@@ -47,6 +47,7 @@ RUN kubectl krew install ctx && \
 
 # Install and setup Starship for ZSH
 RUN curl -sS https://starship.rs/install.sh | sh -s -- -y
+RUN chsh -s $(which zsh)
 RUN wget -O ~/.zshrc https://raw.githubusercontent.com/dr3dr3/dotfiles/refs/heads/main/zsh/zshrc
 RUN wget -O ~/.zshenv https://raw.githubusercontent.com/dr3dr3/dotfiles/refs/heads/main/zsh/zshenv
 RUN wget -O ~/aliases https://raw.githubusercontent.com/dr3dr3/dotfiles/refs/heads/main/zsh/aliases
