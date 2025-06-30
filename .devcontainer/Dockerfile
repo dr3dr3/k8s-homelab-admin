@@ -55,4 +55,7 @@ RUN kubectl krew install ctx && \
     kubectl krew install neat && \
     kubectl krew install score
 
+# Set ZSH as default shell
+RUN chsh -s /bin/zsh
+
 ENTRYPOINT [ "/bin/zsh" ]
