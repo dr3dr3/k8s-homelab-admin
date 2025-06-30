@@ -55,6 +55,7 @@ ENV ZDOTDIR=~
 ENV STARSHIP_CONFIG=~/starship.toml
 ENV STARSHIP_CACHE=~/.starship/cache
 RUN echo 'eval "$(starship init zsh)"' >> ~/.zshrc
-SHELL ["/usr/bin/zsh", "-l", "-c"]
 
-ENTRYPOINT [ "zsh" ]
+SHELL ["/bin/zsh", "-c"]
+
+CMD ["echo", "Hello from DR3DR3 ZSH!"]
