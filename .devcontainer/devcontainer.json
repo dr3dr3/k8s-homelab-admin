@@ -19,15 +19,20 @@
                 "redhat.vscode-yaml",
                 "ms-kubernetes-tools.vscode-kubernetes-tools",
                 "1Password.op-vscode"
-            ]
+            ],
+            "settings": {
+                "terminal.integrated.defaultProfile.linux": "zsh", 
+                "terminal.integrated.profiles.linux": {
+                    "zsh": {
+                        "path": "/bin/zsh"
+                    }
+                }
+            }
         }
     },
 
     "forwardPorts": [
         8080
-    ],
+    ]
 
-    "settings": {
-        "terminal.integrated.shell.*": "/bin/zsh"
-    }
 }
