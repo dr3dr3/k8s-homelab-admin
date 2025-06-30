@@ -58,4 +58,4 @@ RUN kubectl krew install ctx && \
 # Set ZSH as default shell
 RUN chsh -s /bin/zsh
 
-ENTRYPOINT [ "/bin/zsh" ]
+ENTRYPOINT [ "eval", "$(starship init zsh)" ]
