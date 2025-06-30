@@ -2,11 +2,9 @@
 
 ## Setup
 
-You will need to setup 1Password with the relevant Srvice Account token
+You will need to setup 1Password with the relevant Service Account token
 
-```bash
-export OP_SERVICE_ACCOUNT_TOKEN=xxxx
-```
+Create .env file with `OP_SERVICE_ACCOUNT_TOKEN=xxxx`
 
 ### Initialize ZSH
 
