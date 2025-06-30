@@ -9,7 +9,7 @@
 
     "postCreateCommand": "echo 'Ready'",
 
-    "postStartCommand": "./init.sh",
+    "postStartCommand": "echo 'Started'",
 
     "customizations": {
         "vscode": {
