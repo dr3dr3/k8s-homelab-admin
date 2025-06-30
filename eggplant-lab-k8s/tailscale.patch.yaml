@@ -2,4 +2,4 @@ apiVersion: v1alpha1
 kind: ExtensionServiceConfig
 name: tailscale
 environment:
-  - TS_AUTHKEY=tskey-auth-ksfHDUvrn321CNTRL-bZiubz3gubUADu7zsG6fcUMMVVafqBPM
+  - TS_AUTHKEY=op://kubernetes/talos.certificates.ca.eggplant-lab-k8s/notes
