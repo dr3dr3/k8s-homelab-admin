@@ -5,9 +5,11 @@
         "dockerfile": "Dockerfile"
     },
 
+    "workspaceFolder": "/workspace/admin",
+
     "postCreateCommand": "echo 'Ready'",
 
-    "postStartCommand": "echo 'Hello'",
+    "postStartCommand": "./init.sh",
 
     "customizations": {
         "vscode": {
@@ -25,14 +27,7 @@
         8080
     ],
 
-    "terminals": [
-        {
-            "name": "zsh",
-            "shell": {
-                "path": "/bin/zsh"
-            }
-        }
-    ],
-
-    "terminals.integrated.defaultProfile.linux": "zsh"
+    "settings": {
+        "terminal.integrated.shell.*": "/bin/zsh"
+    }
 }
