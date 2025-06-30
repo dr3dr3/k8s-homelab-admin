@@ -1,0 +1,27 @@
+{
+    "name": "DR3-CLI-TOOLS",
+
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+
+    "postCreateCommand": "echo 'Ready'",
+
+    "postStartCommand": "echo 'Hello'",
+
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "github.vscode-pull-request-github",
+                "github.copilot",
+                "redhat.vscode-yaml",
+                "ms-kubernetes-tools.vscode-kubernetes-tools",
+                "1Password.op-vscode"
+            ]
+        }
+    },
+
+    "forwardPorts": [
+        8080
+    ]
+}

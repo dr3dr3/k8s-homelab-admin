@@ -1,0 +1,4 @@
+KUBECONFIG="./kubeconfig.temp"
+CERTIFICATE_AUTH="op://kubernetes/certificates.ca.eggplant-lab-k8s/notes"
+CLIENT_CERT="op://kubernetes/certificates.cc.eggplant-lab-k8s/notes"
+CLIENT_KEY="op://kubernetes/certificates.key.eggplant-lab-k8s/notes"

@@ -1,0 +1,10 @@
+context: eggplant-lab-k8s
+contexts:
+    eggplant-lab-k8s:
+        endpoints:
+            - 192.168.8.140
+        nodes:
+            - 192.168.8.140
+        ca: op://kubernetes/talos.certificates.ca.eggplant-lab-k8s/notes
+        crt: op://kubernetes/talos.certificates.cc.eggplant-lab-k8s/notes
+        key: op://kubernetes/talos.certificates.key.eggplant-lab-k8s/notes
