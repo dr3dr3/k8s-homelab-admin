@@ -17,14 +17,10 @@ RUN apk add --no-cache github-cli
 
 # Install Talosctl
 RUN curl -sL https://talos.dev/install | sh
-RUN alias t=talosctl
 
 # Install Kubectl
 # Useful aliases for kubectl: https://github.com/ahmetb/kubectl-aliases/blob/master/.kubectl_aliases
-RUN apk add --no-cache kubectl && \
-    alias k='kubectl' && \
-    alias kgp='kubectl get pods' && \
-    alias ka='kubectl apply'
+RUN apk add --no-cache kubectl
 
 # Install Kubectl Krew plugin manager
 RUN set -x; cd "$(mktemp -d)" && \
