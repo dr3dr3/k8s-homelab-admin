@@ -72,5 +72,3 @@ eval "$(fzf --zsh)"
 # source $ZDOTDIR/completion.zsh
 
 source $ZDOTDIR/aliases
-
-eval "$(starship init zsh)"
