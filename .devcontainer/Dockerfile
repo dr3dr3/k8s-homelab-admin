@@ -4,7 +4,7 @@ FROM alpine:${ALPINE_VERSION}
 LABEL maintainer="Andre Dreyer"
 
 # Install basic utilities
-RUN apk add --no-cache shadow zsh starship nano fzf eza bat nerd-fonts curl wget git gcompat openssl
+RUN apk add --no-cache fish starship gum yq curl wget git gcompat openssl
 RUN git config --global user.name "Andre Dreyer" && git config --global user.email "git@andredreyer.com"
 
 # Install 1Password CLI
@@ -45,15 +45,11 @@ RUN kubectl krew install ctx && \
     kubectl krew install neat && \
     kubectl krew install score
 
-# Install and setup Starship for ZSH
-RUN curl -sS https://starship.rs/install.sh | sh -s -- -y
-RUN chsh -s $(which zsh)
-RUN wget -O ~/.zshrc https://raw.githubusercontent.com/dr3dr3/dotfiles/refs/heads/main/zsh/zshrc
-RUN wget -O ~/.zshenv https://raw.githubusercontent.com/dr3dr3/dotfiles/refs/heads/main/zsh/zshenv
-RUN wget -O ~/aliases https://raw.githubusercontent.com/dr3dr3/dotfiles/refs/heads/main/zsh/aliases
-RUN wget -O ~/starship.toml https://raw.githubusercontent.com/dr3dr3/dotfiles/refs/heads/main/zsh/.config/starship.toml
-ENV ZDOTDIR=~
-ENV STARSHIP_CONFIG=~/starship.toml
-ENV STARSHIP_CACHE=~/.starship/cache
+# Setup Starship and Fish
+RUN mkdir -p ~/.config/fish
+RUN mkdir -p ~/.config/fish && wget -O ~/.config/fish/config.fish https://raw.githubusercontent.com/dr3dr3/dotfiles/refs/heads/main/fish/config.fish
+RUN mkdir -p ~/.config/starship && wget -O ~/.config/fish/starship.toml https://raw.githubusercontent.com/dr3dr3/dotfiles/refs/heads/main/fish/starship.toml
+ENV STARSHIP_CONFIG=~/.config/starship.toml
+ENV SHELL=/usr/bin/fish
 
-ENTRYPOINT ["/bin/zsh"]
+ENTRYPOINT ["/usr/bin/fish"]

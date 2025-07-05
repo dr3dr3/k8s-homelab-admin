@@ -4,11 +4,11 @@ persist: true
 # Provides machine specific configuration options.
 machine:
     type: worker # Defines the role of the machine within the cluster.
-    token: 60tnjk.zsp86yoqfhqlvria # The `token` is used by a machine to join the PKI of the cluster.
+    token: op://eggplant-lab-k8s/kube-config.machine-token.eggplant-lab-k8s/notes # The `token` is used by a machine to join the PKI of the cluster.
     # The root certificate authority of the PKI.
     ca:
-        crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJQakNCOGFBREFnRUNBaEJpd2xFMmIveUtaZ2FGYXVQL09BdW9NQVVHQXl0bGNEQVFNUTR3REFZRFZRUUsKRXdWMFlXeHZjekFlRncweU5UQTJNalV3TWpVd05UTmFGdzB6TlRBMk1qTXdNalV3TlROYU1CQXhEakFNQmdOVgpCQW9UQlhSaGJHOXpNQ293QlFZREsyVndBeUVBc3F3YUxmSDYxMGh5OGtNSzBCWmhveExyZW40Mk9VVDBIZnZDCkY4MFNqaytqWVRCZk1BNEdBMVVkRHdFQi93UUVBd0lDaERBZEJnTlZIU1VFRmpBVUJnZ3JCZ0VGQlFjREFRWUkKS3dZQkJRVUhBd0l3RHdZRFZSMFRBUUgvQkFVd0F3RUIvekFkQmdOVkhRNEVGZ1FVUlZZeTdQVVdRekJWRDUrcAppeERueWc5SGhnY3dCUVlESzJWd0EwRUF0eGYyb2MrcFVURU5RMmZmMVZzU0lyYVE4disyb3dBNG9xQ1V0cG00ClJBMkplei9ZV1p5WHl6dXhBZU5tYldvSnpsMTlReUdLTkdnKzc1M2Q1MmxvQkE9PQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
-        key: ""
+        crt: op://eggplant-lab-k8s/kube-config.certificates.cc.eggplant-lab-k8s/notes
+        key: op://eggplant-lab-k8s/kube-config.certificates.key.eggplant-lab-k8s/notes
     # Extra certificate subject alternative names for the machine's certificate.
     certSANs: []
     #   # Uncomment this to enable SANs.
@@ -405,8 +405,8 @@ machine:
     #     exampleTaint: exampleTaintValue:NoSchedule
 # Provides cluster specific configuration options.
 cluster:
-    id: zsS9QlUxS5HuzpCXZl1at3KZgBBbBCl_avghwgutDf8= # Globally unique identifier for this cluster (base64 encoded random 32 bytes).
-    secret: OqlrZczJmDRIQm16JqNp07DZEk/mjzQUxglKm8yT/8g= # Shared secret of cluster (base64 encoded random 32 bytes).
+    id: op://eggplant-lab-k8s/kube-config.cluster-id.eggplant-lab-k8s/notes # Globally unique identifier for this cluster (base64 encoded random 32 bytes).
+    secret: op://eggplant-lab-k8s/kube-config.cluster-secret.eggplant-lab-k8s/notes # Shared secret of cluster (base64 encoded random 32 bytes).
     # Provides control plane specific configuration options.
     controlPlane:
         endpoint: https://192.168.8.140:6443 # Endpoint is the canonical controlplane endpoint, which can be an IP address or a DNS hostname.
@@ -427,11 +427,11 @@ cluster:
         #     # URLs containing manifests to apply for the CNI.
         #     urls:
         #         - https://docs.projectcalico.org/archive/v3.20/manifests/canal.yaml
-    token: strfkg.fq4tfbog5wmw8b13 # The [bootstrap token](https://kubernetes.io/docs/reference/access-authn-authz/bootstrap-tokens/) used to join the cluster.
+    token: op://eggplant-lab-k8s/kube-config.bootstrap-token.eggplant-lab-k8s/notes # The [bootstrap token](https://kubernetes.io/docs/reference/access-authn-authz/bootstrap-tokens/) used to join the cluster.
     # The base64 encoded root certificate authority used by Kubernetes.
     ca:
-        crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJpVENDQVMrZ0F3SUJBZ0lRSmdaQUtJU3NQdDIvSkpKMlExZWhIVEFLQmdncWhrak9QUVFEQWpBVk1STXcKRVFZRFZRUUtFd3ByZFdKbGNtNWxkR1Z6TUI0WERUSTFNRFl5TlRBeU5UQTFNMW9YRFRNMU1EWXlNekF5TlRBMQpNMW93RlRFVE1CRUdBMVVFQ2hNS2EzVmlaWEp1WlhSbGN6QlpNQk1HQnlxR1NNNDlBZ0VHQ0NxR1NNNDlBd0VICkEwSUFCQnpWZ000OXMwSnJNVjRCQ2xZRlZxd2dmS3pZRnJLM0k5RDYwVlc0RElEdlNYNENEMllsemRDNG0yaDEKeVNvZDZXTG04OHpYU25GOTJleFcwTFI4dTcyallUQmZNQTRHQTFVZER3RUIvd1FFQXdJQ2hEQWRCZ05WSFNVRQpGakFVQmdnckJnRUZCUWNEQVFZSUt3WUJCUVVIQXdJd0R3WURWUjBUQVFIL0JBVXdBd0VCL3pBZEJnTlZIUTRFCkZnUVV2NUhLTGpxTzAyL25VRUU4M3U5SGF0c1djeTh3Q2dZSUtvWkl6ajBFQXdJRFNBQXdSUUlnUHl4VkhhL1YKTWtIczNSTXYxTmhHRmFPMzJ6U3hpVW5WcDZ3LzZRcStqQmdDSVFEbEtsRG1oZHdHVDRLOVl1c2YvMnQ3WFAwQwpNOGZSTlpQMWcxQVlkU21oZFE9PQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
-        key: ""
+        crt: op://eggplant-lab-k8s/kube-config.certificates.ca.eggplant-lab-k8s/notes
+        key: op://eggplant-lab-k8s/kube-config.certificates.key.eggplant-lab-k8s/notes
     # Configures cluster member discovery.
     discovery:
         enabled: true # Enable the cluster membership discovery feature.

@@ -85,7 +85,7 @@ Remember to update `TALOSIP` for the workers
 ```bash
 
 export TALOSIP="192.168.8.110"
-op run --env-file="./.env" -- talosctl apply-config --insecure -f ./controlplane.yaml -n $TALOSIP -e $TALOSIP --talosconfig=$TALOSCONF --config-patch @tailscale.patch.yaml
+talosctl apply-config --insecure -f $CONTROLPLANE_YAML -n $TALOSIP -e $TALOSIP --talosconfig=$TALOSCONF --config-patch @temp.tailscale.patch.yaml
 
 ```
 
@@ -93,8 +93,8 @@ op run --env-file="./.env" -- talosctl apply-config --insecure -f ./controlplane
 
 ```bash
 
-export TALOSIP="192.168.8.110"
-op run --env-file="./.env" -- talosctl apply-config --insecure -f ./worker.yaml -n $TALOSIP -e $TALOSIP --talosconfig=$TALOSCONF --config-patch @tailscale.patch.yaml
+export C1_IP="192.168.8.110"
+talosctl apply-config --insecure -f $WORKER_YAML -n $C1_IP -e $C1_IP --talosconfig=$TALOSCONF --config-patch @temp.tailscale.patch.yaml
 
 ```
 
@@ -106,7 +106,7 @@ Wait for logs to show `etcd` is waiting to join the cluster
 
 ```bash
 
-op run --env-file="./.env" -- talosctl --talosconfig $TALOSCONFIG bootstrap
+talosctl --talosconfig $TALOSCONFIG bootstrap
 
 ```
 
@@ -118,7 +118,7 @@ Check everything is healthy by running `talosctl health`
 
 ```bash
 
-op run --env-file="./.env" -- talosctl --talosconfig $TALOSCONFIG kubeconfig .
+talosctl --talosconfig $TALOSCONFIG kubeconfig .
 export KUBECONFIG="./kubeconfig"
 
 ```
@@ -134,13 +134,13 @@ Check by running `kubectl get nodes`
 ### Setup Tailscale extension
 
 ```bash
-op run --env-file="./.env" -- talosctl apply-config -f controlplane.yml -p @tailscale.patch.yaml
+talosctl apply-config -f controlplane.yml -p @temp.tailscale.patch.yaml
 ```
 
 Find the new IP from Tailscale and enable on controlplane
 
 ```bash
-op run --env-file="./.env" -- talosctl logs ext-tailscale -f
+talosctl logs ext-tailscale -f
 ```
 
 -f = follow
@@ -154,7 +154,7 @@ Note: Can leave the LAN address there as well
 Then apply config again:
 
 ```bash
-op run --env-file="./.env" -- talosctl apply-config -f controlplane.yml -p @tailscale.patch.yaml
+talosctl apply-config -f $CONTROLPLANE_YAML -p @temp.tailscale.patch.yaml
 ```
 
 Then update the `talosconfig` with the new IP as well
@@ -162,7 +162,7 @@ Then update the `talosconfig` with the new IP as well
 ### Upgrade Talos
 
 ```bash
-op run --env-file="./.env" -- talosctl upgrade --image factory.talos.dev/installer/<ID>:<version> -m powercycle -f -e 192.168.8.108 -n 192.168.8.108
+talosctl upgrade --image factory.talos.dev/installer/<ID>:<version> -m powercycle -f -n $C1_IP -e $C1_IP
 ```
 
 -f = force
@@ -170,7 +170,7 @@ op run --env-file="./.env" -- talosctl upgrade --image factory.talos.dev/install
 ### Get logs
 
 ```bash
-talosctl dmesg -f -e $TALOSIP -n $TALOSIP
+talosctl dmesg -f -e $C1_IP -n $C1_IP
 ```
 
 -f = follow

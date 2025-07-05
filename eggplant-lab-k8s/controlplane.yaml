@@ -4,11 +4,11 @@ persist: true
 # Provides machine specific configuration options.
 machine:
     type: controlplane # Defines the role of the machine within the cluster.
-    token: 60tnjk.zsp86yoqfhqlvria # The `token` is used by a machine to join the PKI of the cluster.
+    token: op://eggplant-lab-k8s/kube-config.machine-token.eggplant-lab-k8s/notes # The `token` is used by a machine to join the PKI of the cluster.
     # The root certificate authority of the PKI.
     ca:
-        crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJQakNCOGFBREFnRUNBaEJpd2xFMmIveUtaZ2FGYXVQL09BdW9NQVVHQXl0bGNEQVFNUTR3REFZRFZRUUsKRXdWMFlXeHZjekFlRncweU5UQTJNalV3TWpVd05UTmFGdzB6TlRBMk1qTXdNalV3TlROYU1CQXhEakFNQmdOVgpCQW9UQlhSaGJHOXpNQ293QlFZREsyVndBeUVBc3F3YUxmSDYxMGh5OGtNSzBCWmhveExyZW40Mk9VVDBIZnZDCkY4MFNqaytqWVRCZk1BNEdBMVVkRHdFQi93UUVBd0lDaERBZEJnTlZIU1VFRmpBVUJnZ3JCZ0VGQlFjREFRWUkKS3dZQkJRVUhBd0l3RHdZRFZSMFRBUUgvQkFVd0F3RUIvekFkQmdOVkhRNEVGZ1FVUlZZeTdQVVdRekJWRDUrcAppeERueWc5SGhnY3dCUVlESzJWd0EwRUF0eGYyb2MrcFVURU5RMmZmMVZzU0lyYVE4disyb3dBNG9xQ1V0cG00ClJBMkplei9ZV1p5WHl6dXhBZU5tYldvSnpsMTlReUdLTkdnKzc1M2Q1MmxvQkE9PQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
-        key: LS0tLS1CRUdJTiBFRDI1NTE5IFBSSVZBVEUgS0VZLS0tLS0KTUM0Q0FRQXdCUVlESzJWd0JDSUVJSG9lK05TN0xhVnhsOTk4dXdpUnh4V0pFN0w5OHpScmNCbCtmSWx5VTZUcQotLS0tLUVORCBFRDI1NTE5IFBSSVZBVEUgS0VZLS0tLS0K
+        crt: op://eggplant-lab-k8s/kube-config.certificates.cc.eggplant-lab-k8s/notes
+        key: op://eggplant-lab-k8s/kube-config.certificates.key.eggplant-lab-k8s/notes
     # Extra certificate subject alternative names for the machine's certificate.
     certSANs: []
     #   # Uncomment this to enable SANs.
@@ -402,8 +402,8 @@ machine:
     #     exampleTaint: exampleTaintValue:NoSchedule
 # Provides cluster specific configuration options.
 cluster:
-    id: zsS9QlUxS5HuzpCXZl1at3KZgBBbBCl_avghwgutDf8= # Globally unique identifier for this cluster (base64 encoded random 32 bytes).
-    secret: OqlrZczJmDRIQm16JqNp07DZEk/mjzQUxglKm8yT/8g= # Shared secret of cluster (base64 encoded random 32 bytes).
+    id: op://eggplant-lab-k8s/kube-config.cluster-id.eggplant-lab-k8s/notes # Globally unique identifier for this cluster (base64 encoded random 32 bytes).
+    secret: op://eggplant-lab-k8s/kube-config.cluster-secret.eggplant-lab-k8s/notes # Shared secret of cluster (base64 encoded random 32 bytes).
     # Provides control plane specific configuration options.
     controlPlane:
         endpoint: https://192.168.8.140:6443 # Endpoint is the canonical controlplane endpoint, which can be an IP address or a DNS hostname.
@@ -424,19 +424,19 @@ cluster:
         #     # URLs containing manifests to apply for the CNI.
         #     urls:
         #         - https://docs.projectcalico.org/archive/v3.20/manifests/canal.yaml
-    token: strfkg.fq4tfbog5wmw8b13 # The [bootstrap token](https://kubernetes.io/docs/reference/access-authn-authz/bootstrap-tokens/) used to join the cluster.
-    secretboxEncryptionSecret: mXIT0zenAb1YYD2tNoHSh/sRcwihTfwgsnNYE9MZB4Y= # A key used for the [encryption of secret data at rest](https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/).
+    token: op://eggplant-lab-k8s/kube-config.bootstrap-token.eggplant-lab-k8s/notes # The [bootstrap token](https://kubernetes.io/docs/reference/access-authn-authz/bootstrap-tokens/) used to join the cluster.
+    secretboxEncryptionSecret: op://eggplant-lab-k8s/kube-config.secretbox.encryption-key.eggplant-lab-k8s/notes # A key used for the [encryption of secret data at rest](https://kubernetes.io/docs/tasks/administer-cluster/encrypt-data/).
     # The base64 encoded root certificate authority used by Kubernetes.
     ca:
-        crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJpVENDQVMrZ0F3SUJBZ0lRSmdaQUtJU3NQdDIvSkpKMlExZWhIVEFLQmdncWhrak9QUVFEQWpBVk1STXcKRVFZRFZRUUtFd3ByZFdKbGNtNWxkR1Z6TUI0WERUSTFNRFl5TlRBeU5UQTFNMW9YRFRNMU1EWXlNekF5TlRBMQpNMW93RlRFVE1CRUdBMVVFQ2hNS2EzVmlaWEp1WlhSbGN6QlpNQk1HQnlxR1NNNDlBZ0VHQ0NxR1NNNDlBd0VICkEwSUFCQnpWZ000OXMwSnJNVjRCQ2xZRlZxd2dmS3pZRnJLM0k5RDYwVlc0RElEdlNYNENEMllsemRDNG0yaDEKeVNvZDZXTG04OHpYU25GOTJleFcwTFI4dTcyallUQmZNQTRHQTFVZER3RUIvd1FFQXdJQ2hEQWRCZ05WSFNVRQpGakFVQmdnckJnRUZCUWNEQVFZSUt3WUJCUVVIQXdJd0R3WURWUjBUQVFIL0JBVXdBd0VCL3pBZEJnTlZIUTRFCkZnUVV2NUhLTGpxTzAyL25VRUU4M3U5SGF0c1djeTh3Q2dZSUtvWkl6ajBFQXdJRFNBQXdSUUlnUHl4VkhhL1YKTWtIczNSTXYxTmhHRmFPMzJ6U3hpVW5WcDZ3LzZRcStqQmdDSVFEbEtsRG1oZHdHVDRLOVl1c2YvMnQ3WFAwQwpNOGZSTlpQMWcxQVlkU21oZFE9PQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
-        key: LS0tLS1CRUdJTiBFQyBQUklWQVRFIEtFWS0tLS0tCk1IY0NBUUVFSU80Vmw1K3hIWkhUeWFqbHVxNk1Kd28rRFJwRldxUVd3QTkxNVJJcXNDODNvQW9HQ0NxR1NNNDkKQXdFSG9VUURRZ0FFSE5XQXpqMnpRbXN4WGdFS1ZnVldyQ0I4ck5nV3NyY2owUHJSVmJnTWdPOUpmZ0lQWmlYTgowTGliYUhYSktoM3BZdWJ6ek5kS2NYM1o3RmJRdEh5N3ZRPT0KLS0tLS1FTkQgRUMgUFJJVkFURSBLRVktLS0tLQo=
+        crt: op://eggplant-lab-k8s/kube-config.certificates.ca.eggplant-lab-k8s/notes
+        key: op://eggplant-lab-k8s/kube-config.certificates.key.eggplant-lab-k8s/notes
     # The base64 encoded aggregator certificate authority used by Kubernetes for front-proxy certificate generation.
     aggregatorCA:
-        crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJYekNDQVFhZ0F3SUJBZ0lSQUtTSm95TzFDYk1Dc0ROVisyMnp6ZTR3Q2dZSUtvWkl6ajBFQXdJd0FEQWUKRncweU5UQTJNalV3TWpVd05UTmFGdzB6TlRBMk1qTXdNalV3TlROYU1BQXdXVEFUQmdjcWhrak9QUUlCQmdncQpoa2pPUFFNQkJ3TkNBQVNxM2JtVzJrTFlYZUdmRFRIZ3FoY2tlbjFkL0l1bGZVdDdxYzVCN3NseEJ6WXFNRmNjCmlKcTNFeXJDOWtjUDUrNmpQdExmZWU4cmFMSkxqSDU2VEp0OG8yRXdYekFPQmdOVkhROEJBZjhFQkFNQ0FvUXcKSFFZRFZSMGxCQll3RkFZSUt3WUJCUVVIQXdFR0NDc0dBUVVGQndNQ01BOEdBMVVkRXdFQi93UUZNQU1CQWY4dwpIUVlEVlIwT0JCWUVGT0NhdXNBWXkxeGRrV1hxbGJBTXJhSlBxTkRSTUFvR0NDcUdTTTQ5QkFNQ0EwY0FNRVFDCklCK0RYVjQ5ZjRjaWo5ckt1Q3JVSmNmSk1DZGRENkx0bC9aZEtubVBka2dTQWlBRnN5TGs5WW5RblVIOE5LYmMKOFpISy9RanZiYmJjUUxhMlZkSXFVZElMT1E9PQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
-        key: LS0tLS1CRUdJTiBFQyBQUklWQVRFIEtFWS0tLS0tCk1IY0NBUUVFSUFteU1JeTM5SE1MZmIxQkRla1dOeHdmTnE0eUkvOVB2ZXBZbzZnYVA3bEFvQW9HQ0NxR1NNNDkKQXdFSG9VUURRZ0FFcXQyNWx0cEMyRjNobncweDRLb1hKSHA5WGZ5THBYMUxlNm5PUWU3SmNRYzJLakJYSElpYQp0eE1xd3ZaSEQrZnVvejdTMzNudksyaXlTNHgrZWt5YmZBPT0KLS0tLS1FTkQgRUMgUFJJVkFURSBLRVktLS0tLQo=
+        crt: op://eggplant-lab-k8s/kube-config.aggregator.ca.eggplant-lab-k8s/notes
+        key: op://eggplant-lab-k8s/kube-config.aggregator.key.eggplant-lab-k8s/notes
     # The base64 encoded private key for service account token generation.
     serviceAccount:
-        key: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlKS2dJQkFBS0NBZ0VBcVkxQmQxclo1QXczMzAwSnlhcnlVQmZrQ1dSMXo1UEVOZHJYbmZsMS90UmZtRUVmCm56QmhmdEdpQlBoWVBmZzl5WUtvaE4rcUFIYldBZ25MSGc4dksrT1Ruc3pwZjNSL25kR2JzQjlwaWs5eDVmb3YKMENid0dScUp0M3ArWk43NDNldFZ6L3lOU3pKdWl4VE83ZlFNdHBsOWVQcmNvR0l2UUxla2d2eUdRdmpBVEt1Twp6TkdsTHFaMmFhOU9ycmQwRmIzV1J6amgrTmJLcmZhdmJqdkV6bURoeC9oUGFYU01oYVFkMGNEeEczdFltVHJVCk5NV0VKL2hkUUpxQVRDWEhxL0xjSFR1VFYyd0o0MXdyZ2h4UjArUXFzNWJxWHM2SUtGTlV6Rmp2Z3o1anJvU1EKR0ROby9wZ3ZnYlc3dms2SHFrWmd6Tmx6R2poY3RqVElYMGdFWUJKWlZRS0p4YkZCUk56My85Nk94d25nb0xBWApsVHg2OHNrMExLQVd1MnZ4aTRtVHNFcHpqZk1kWnV2WVh2bkVNVkxCbHV4bkhzK2tXMURrZlRvK3ArMzM4K3MrCllZcWhmVTJmSWlZOTJkWG5PNnYxcGlXd2JTbXlJM0RMNm1RSG1GcmRrdWZNblVyQUhlbkFLNVRCczBmQkNiUFoKM2ZqT3VwTVlnZ01lZ082dE9ZR3lmNzFNcWM2aDFudzlKZjVmLy8zT21OOXZjSTErejVjaTFtZlVINGZWbVNCcwpxZ2hMazUxTFI2a1Y4V3RPT0kwUzBMYk9oYW1zT0pocHVHdmNRRTJUTmpjazRwWnc1Z1REdElSV2Y0WUdEa2Y0CkNWY0E0RVN5MzdpemtGWkd3dzFENjJjVDhManFjOW10emptRUY3Ykl2Rm1IVFhnOUtXUExIdW5sTEpFQ0F3RUEKQVFLQ0FnQURBcVBmSVNaeEFOTXB3bEU5VkFTM1Bud1U4U0tldzJSeXZxWjRVNDlzOTNjT1owcHdwZlBpcVBUbwpGeWhGdG5Ka0V2NXQ2VTA0UE9QbUpCb3BiZFZGYWdENVlyU0RjRVhkQ1ZxZ3oxMGZ0YUk2WUZXNlAvTmRDTmdCCjg5YlBTRTNCbHlEbmlsWkMwcTgrU1ZXT0o4bHNHbTMzUFptZG5vVzBkbzQ4SXBvc1IzM3VWOURManpUbnk0MDgKam41Y1prcnBqUFh2RnFFa0MxMFRWZGIxYlhJOFBiSnM4NGxjSlZPemU3cDJ3VHNOWlFSTFhrYU1rT09CcjZRSApYdDlMTjNJdnI4ZjA1aTBMR3FBcXZUeWRraUs2TmcwczRQN0FSYVFscGFzQjNXQ3ZEVktnbUgyNCttR0k4dEErCllPV0pTRXM3dEMzZGUvV2NlSU5KZzlSS0VQOHBtUXBuZWQ5TFBWNjc3emE0TDl2Q0hVdEoySk5BSUZOV3RnUm0KaVVZUzhROEh4dVV1ai85dk1HL2lsR3VIb2p0b2s0Nk52YmozU3Z6bUNFMStUQWs4T0pPaW9KbUpNN2djd3FiTgpFMnVNaUZtbXZQL1dpWFhyRzRuaWdWdURxR3lxNUxzMDlDc1Z0SWxnS244TXpnTXN6YStjL0pWY0ZiOGtTVGtCCkMxSHJTMlU5VjBaTEo2WlRnVnRvY2hzVVBEWWpwbnFSVG9WNEdERDhqSEZJTWllNE5XWjE5YitjY1A0aHVmUmIKWkpYS05iR01tZVRxeEF4Z3B6VDVhUGUvRnNVaGFuOGs2SlE0V0FrcFJpVEpWNldNTFFkdXB3MCtwa0dpUER6agovNUtwOUN3VHQzTGV3Y0Q3VG1EeURHNjI1dUxtU2pHY3lBQ01qd0VKR3RFUW5MaXBVUUtDQVFFQTNaZjhaeDBICitvZzRVR1N1MUlGbXYwZ001Vmltb1d1em41QytNNlV6aVRHM3VRVERNMWNkWnBiQXA1WHNsQVNjMjRpaWxJbHIKOEZuUnNETHU3OWNSN0FWcFFwbDQxTkIrbEVZclRlVFMvVGsxTjdHRTlqQ3M3ZWx6QkpQaW9uWTJSbi8xRy9XMgo2MXJXT0tjcGVqVk5peXdGS1lYNTYyNFdRSHB6V1ZkakkvLzR2Z2g0WmsrbzNNamlqMmI3ZjBWWjlLb0NlYXBhCjY4UEdLbDNzZUlpRzJBbE5GQ09hTjBDY0ViWHB0WVkxaCswZmlkbEZxSXZvUmoybVE5QWVtSktESnc1S2pvaGMKU3o1VVNmQlQwcndNWkZsd0xQd0RhTG5mY2U3YWpMenh6VWdtaXhTeWZYRUJHRDZrL0VYclkwRWVNTVFjT2tISwpVQ244Skk0RGk4VkNMd0tDQVFFQXcrQ3VzcXROd1g5ZnVZV3hJMDdDbEJKeHI0QkxiWUgwL0t4N0JqbGthV0VFCkJtYUtUK3ZBd1BuM1dVbDVzdGphbGxxMmNxVDNuaytqdzhTZmFvTnBzdzJVekFxazJ5TXlYTnFySXNoTERINE8KRWJ5UTVaMDVJSnZHTEhVdHFHUlRwUkIvSWRmNFNkUU9wL1hTUVVaWTJ5Y3FWc1RhUG9GL1U3a2VKNTdZdUZzegpXNThlY1J3dEo5REdWdDdlUmlxUTZ1c3pSTlJCMHcyWkhRWUpGM2krK2h0by96K2ovb1JUQVNTL3pLd0Znalh2CkZBZElKVERjRGpnYTBjWmd3MzNhSW8wMEVZRlJiMUdYbEhBWG1lYXVsOGRweG5vQkxWaTZQVm5DeWVES3MyUloKcnVvWCsyOE81T043SkpGWkp0UkxMRjRtK0NvUHNQYng4aktVVS9xTlB3S0NBUUVBa21SMk95alN2SkNCbzVyZwpaVU9YdllhNy9rZ3l6VEY1MlZDbVZ6Z3NjOWFFcVphYjNxOE9uVmU2cnZ3ODd3eWRFK3VRZk5ETW5seTRTczliClN0ZXEzMkl6eCt2Y0I3dzE0MzczM04zdkJadGxyUVY1OGFyMms3WkdaaC9NK2NkZTAvUjAyYVBhMUdHT1pKOEsKcDlIUENNSnNKcUo4R1MwQlJsZWZITWErbUduaXlxaU40Z2wrWlYzUlR5dVp1dHIyTXN5ZUZnS1ZUbXhuM2xWdQpnN0t1WXNyQ1FTdkVGZng1SHJvdlM5eitRRzVIQjZxaWVsYnpmSFArQTQ3YXA3RWpOQW9jOTB6ZXJGYmhHSGZNCjZNdVM1RGl5QXdYNnVwVVJLUlBERG5kRXgzbUMvUjhQVEEvN3lTaVpscEFha2RmVE9pUlZBYWUxSUlDY013b2YKRFplandRS0NBUUVBZ1RLQ3FEQ2JZZVM4NCthTnR5Y3M2blBiN3BGbHJ2NUg5QjFrSysvUkRqekNaZUplbW1aNgp4ZzVhR3RkKzRQdHQrand0R1NNOGZIdzFIVnhrZGVIbDV3Y3ZQUUpNU0lwSG5yMVFvZW1RcnRXNk8vS3ZjL1FuCkNSNFdNWjY4bGRSTzQ1SWsrTksxM3lSeTRsQWU5WlVMNk1sRmdPUG91OCs0aHlXVUFUZ2g1RCtyZVdSVHRQR0wKeXpaR2pHZ0dIaXZYV0V2NGpnNmV1REhBNjBiZTJrOTNVQXFpVDdIUFhvSXpLWTd1djNZN1QrNTVHakhQWVZCLwo1UlVXZzRVZ3IvRWozeVJaMHE0RVk3Tmlrckw0cmpkY3M1b0JaN3R6YVZDYnp2bVVwSW1UeVkySUpmb2NCV2owClh2NjRhNTgvT1lCUGNSMU5BT1RsWXFrUFh0d0R2L3lFQ3dLQ0FRRUFqK3NsaUtKbEJ3MnlrckNtSlBuQUN5VXQKeWJadFg3dUtKUEFuRFEzeHAvKzN1S0NoNWEvaCsrTzJablNlTDdady90ZVlCb0l3TGFuR0JNN1ltb1NDZmhjSgp6QVcreXBlTVRYZXFZQ1RENHBwRk5aWURyWjJTSnlEKzFZS2JZbHFTMldXU1ZhUHFrVFAxdXd3MEJ1dVJKV3lGCkl2WG9renovbFFEUGhDWGM0NnVxaUU2L2dVaE5BaXNuZTJWQUZOSWRrNEdHRzZvelZMV0FkTU1IMHJMMEtjcUMKWDk0RnFjWmsybWFIR3ZTQ0pueDBjZ3NsdjJQOTM3eVM1MUU5V2FWZW5CZkJtdmNTZ1BNelR4SVlTYkNad1k1cQpjUEZCMEU0TFBtdnFDdktkQk5pUmJQNHMxWUtaZTFzbHVHd1EwUmRaOU4rTXBZRnhMK1BhTnFnVHZYU1Uvdz09Ci0tLS0tRU5EIFJTQSBQUklWQVRFIEtFWS0tLS0tCg==
+        key: op://eggplant-lab-k8s/kube-config.service-account.eggplant-lab-k8s/notes
     # API server specific configuration options.
     apiServer:
         image: registry.k8s.io/kube-apiserver:v1.33.1 # The container image used in the API server manifest.
@@ -523,8 +523,8 @@ cluster:
     etcd:
         # The `ca` is the root certificate authority of the PKI.
         ca:
-            crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJmVENDQVNTZ0F3SUJBZ0lSQUtFZ1lTeFBtMVBXd2hFaWppc1cwOGd3Q2dZSUtvWkl6ajBFQXdJd0R6RU4KTUFzR0ExVUVDaE1FWlhSalpEQWVGdzB5TlRBMk1qVXdNalV3TlROYUZ3MHpOVEEyTWpNd01qVXdOVE5hTUE4eApEVEFMQmdOVkJBb1RCR1YwWTJRd1dUQVRCZ2NxaGtqT1BRSUJCZ2dxaGtqT1BRTUJCd05DQUFSKzJkZFRSY3lTClBlNjRvclVveWdzQ2NCMjF0elA5Zmpvd2ttdmFGejA1cFNGWTg1S2ZldzhXQzdFQTVsRHdWZ3VySnhyMm1GMm0KVGlodFE4ckNWZlJ2bzJFd1h6QU9CZ05WSFE4QkFmOEVCQU1DQW9Rd0hRWURWUjBsQkJZd0ZBWUlLd1lCQlFVSApBd0VHQ0NzR0FRVUZCd01DTUE4R0ExVWRFd0VCL3dRRk1BTUJBZjh3SFFZRFZSME9CQllFRktGZEllSEExZ1dsCjBiQmNhR1JBRWNmUTU3V1pNQW9HQ0NxR1NNNDlCQU1DQTBjQU1FUUNJSG1FODZFaUx1NGNnMlI4QWhUTmZSZFoKKy9VQ2l1SUk4Y3pvOUgzVFgvTUhBaUFVZDBzd1FHWHk0VmFueVhzeUlEWnJRU2o3b3FjVHRQdFdtcG9pc3UwNwpKZz09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
-            key: LS0tLS1CRUdJTiBFQyBQUklWQVRFIEtFWS0tLS0tCk1IY0NBUUVFSVByMEtQV2c4NW5WaXJsbFlURU5rc1U4aW1LQmk3V2tWQThpUzMzcmNzaWRvQW9HQ0NxR1NNNDkKQXdFSG9VUURRZ0FFZnRuWFUwWE1rajN1dUtLMUtNb0xBbkFkdGJjei9YNDZNSkpyMmhjOU9hVWhXUE9TbjNzUApGZ3V4QU9aUThGWUxxeWNhOXBoZHBrNG9iVVBLd2xYMGJ3PT0KLS0tLS1FTkQgRUMgUFJJVkFURSBLRVktLS0tLQo=
+            crt: op://eggplant-lab-k8s/kube-config.etcd.ca.eggplant-lab-k8s/notes
+            key: op://eggplant-lab-k8s/kube-config.etcd.key.eggplant-lab-k8s/notes
         
         # # The container image used to create the etcd service.
         # image: gcr.io/etcd-development/etcd:v3.5.21
