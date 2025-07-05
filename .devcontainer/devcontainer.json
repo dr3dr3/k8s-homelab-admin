@@ -19,7 +19,15 @@
                 "redhat.vscode-yaml",
                 "ms-kubernetes-tools.vscode-kubernetes-tools",
                 "1Password.op-vscode"
-            ]
+            ],
+            "settings": {
+                "terminal.integrated.defaultProfile.linux": "fish", 
+                "terminal.integrated.profiles.linux": {
+                    "fish": {
+                        "path": "/usr/bin/fish"
+                    }
+                }
+            }
         }
     },
 
