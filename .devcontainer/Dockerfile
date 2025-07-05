@@ -8,7 +8,7 @@ RUN apk add --no-cache fish starship gum yq curl wget git gcompat openssl
 RUN git config --global user.name "Andre Dreyer" && git config --global user.email "git@andredreyer.com"
 
 # Set shell to bash
-SHELL ["/bin/bash", "-c"]
+SHELL ["/bin/ash", "-c"]
 
 # Install 1Password CLI
 RUN echo https://downloads.1password.com/linux/alpinelinux/stable/ >> /etc/apk/repositories && \
