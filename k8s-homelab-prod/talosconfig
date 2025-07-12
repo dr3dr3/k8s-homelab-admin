@@ -1,0 +1,10 @@
+context: k8s-homelab-prod
+contexts:
+    k8s-homelab-prod:
+        endpoints:
+            - 192.168.8.174
+        nodes:
+            - 192.168.8.174
+        ca: op://k8s-homelab-prod/talos.ca.k8s-homelab-prod/notes
+        crt: op://k8s-homelab-prod/talos.crt.k8s-homelab-prod/notes
+        key: op://k8s-homelab-prod/talos.key.k8s-homelab-prod/notes

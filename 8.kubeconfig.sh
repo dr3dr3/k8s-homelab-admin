@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Pre-requisites
+# CLUSTER env var is set to the cluster name
+# 1Password vault is created
+
+# Setup secrets into 1Password vault
+
 target="kube-config.certificate-authority-data.$CLUSTER"
 op item create --category "Secure Note" --title $target --vault $CLUSTER "notes=$(yq '.clusters[0].cluster.certificate-authority-data' ./$CLUSTER/kubeconfig)"
 value="op://$CLUSTER/$target/notes" yq -i '.clusters[0].cluster.certificate-authority-data = env(value)' ./$CLUSTER/kubeconfig
@@ -11,3 +17,8 @@ value="op://$CLUSTER/$target/notes" yq -i '.users[0].user.client-certificate-dat
 target="kube-config.client-key-data.$CLUSTER"
 op item create --category "Secure Note" --title $target --vault $CLUSTER "notes=$(yq '.users[0].user.client-key-data' ./$CLUSTER/kubeconfig)"
 value="op://$CLUSTER/$target/notes" yq -i '.users[0].user.client-key-data = env(value)' ./$CLUSTER/kubeconfig
+
+op inject -i ./$CLUSTER/kubeconfig -o ./$CLUSTER/temp.kubeconfig --cache=false
+
+# Need to change this to fish set -Ux KUBECONFIG ./$CLUSTER/temp.kubeconfig
+export KUBECONFIG="./$CLUSTER/temp.kubeconfig"

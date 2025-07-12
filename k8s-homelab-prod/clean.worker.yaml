@@ -1,0 +1,53 @@
+version: v1alpha1
+debug: false
+persist: true
+machine:
+  type: worker
+  token: op://k8s-homelab-prod/worker.machine.token.k8s-homelab-prod/notes
+  ca:
+    crt: op://k8s-homelab-prod/worker.machine.ca.crt.k8s-homelab-prod/notes
+    key: ""
+  certSANs: []
+  kubelet:
+    image: ghcr.io/siderolabs/kubelet:v1.33.2
+    defaultRuntimeSeccompProfileEnabled: true
+    disableManifestsDirectory: true
+  network: {}
+  install:
+    disk: /dev/nvme0n1
+    image: factory.talos.dev/installer/376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba:v1.10.5
+    wipe: true
+  registries: {}
+  features:
+    rbac: true
+    stableHostname: true
+    apidCheckExtKeyUsage: true
+    diskQuotaSupport: true
+    kubePrism:
+      enabled: true
+      port: 7445
+    hostDNS:
+      enabled: true
+      forwardKubeDNSToHost: true
+cluster:
+  id: op://k8s-homelab-prod/worker.cluster.id.k8s-homelab-prod/notes
+  secret: op://k8s-homelab-prod/worker.cluster.secret.k8s-homelab-prod/notes
+  controlPlane:
+    endpoint: https://192.168.8.174:6443
+  clusterName: k8s-homelab-prod
+  network:
+    dnsDomain: cluster.local
+    podSubnets:
+      - 10.244.0.0/16
+    serviceSubnets:
+      - 10.96.0.0/12
+  token: op://k8s-homelab-prod/worker.cluster.token.k8s-homelab-prod/notes
+  ca:
+    crt: op://k8s-homelab-prod/worker.cluster.ca.crt.k8s-homelab-prod/notes
+    key: ""
+  discovery:
+    enabled: true
+    registries:
+      kubernetes:
+        disabled: true
+      service: {}

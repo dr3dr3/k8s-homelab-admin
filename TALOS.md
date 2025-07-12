@@ -41,9 +41,9 @@ In your router set a DHCP Reservation for this IP using the MAC address
 
 ## Get TALOS config
 
-Note: Choose your cluster name. Example: `eggplant-lab-k8s`
+Note: Choose your cluster name. Example: `k8s-homelab-dev1`
 
-First... create folder for the new cluster. Example: `\eggplant-lab-k8s` and CD into that directory in terminal
+First... create folder for the new cluster. Example: `\k8s-homelab-dev1` and CD into that directory in terminal
 
 ### Generate TALOS config
 
@@ -51,10 +51,11 @@ Only do this ONCE! (Not for each VM)
 
 ```bash
 
-export TALOSIP="192.168.8.108"
-
-talosctl gen config eggplant-lab-k8s https://$TALOSIP:6443 --install-image=factory.talos.dev/installer/4a0d65c669d46663f377e7161e50cfd570c401f26fd9e7bda34a0216b6f1922b:v1.10.4
-
+export CLUSTER="k8s-homelab-dev1"
+export CP1_IP="192.168.8.108"
+export $TALOS_SCHEMEID="376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba"
+export $TALOS_VERSION="v1.10.5"
+talosctl gen config $CLUSTER https://$CP1_IP:6443 --install-image=factory.talos.dev/installer/$TALOS_SCHEMEID:$TALOS_VERSION
 export TALOSCONFIG="./talosconfig"
 
 ```
