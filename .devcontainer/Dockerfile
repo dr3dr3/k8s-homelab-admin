@@ -46,7 +46,6 @@ RUN kubectl krew install ctx && \
     kubectl krew install score
 
 # Setup Starship and Fish
-RUN mkdir -p ~/.config/fish
 RUN mkdir -p ~/.config/fish && wget -O ~/.config/fish/config.fish https://raw.githubusercontent.com/dr3dr3/dotfiles/refs/heads/main/fish/config.fish
 RUN mkdir -p ~/.config/starship && wget -O ~/.config/fish/starship.toml https://raw.githubusercontent.com/dr3dr3/dotfiles/refs/heads/main/fish/starship.toml
 ENV STARSHIP_CONFIG=~/.config/starship.toml
