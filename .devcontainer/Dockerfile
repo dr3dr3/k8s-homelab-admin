@@ -4,7 +4,7 @@ FROM alpine:${ALPINE_VERSION}
 LABEL maintainer="Andre Dreyer"
 
 # Install basic utilities
-RUN apk add --no-cache fish starship stow gum yq curl wget git gcompat openssl
+RUN apk add --no-cache fish starship gum yq curl wget git gcompat openssl
 RUN git config --global user.name "Andre Dreyer" && git config --global user.email "git@andredreyer.com"
 
 # Install 1Password CLI
