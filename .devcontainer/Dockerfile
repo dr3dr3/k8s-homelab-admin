@@ -1,11 +1,11 @@
 ARG ALPINE_VERSION=latest
 FROM alpine:${ALPINE_VERSION}
 
-LABEL maintainer="Andre Dreyer"
+LABEL maintainer="André Dreyer"
 
 # Install basic utilities
-RUN apk add --no-cache fish starship gum yq curl wget git gcompat openssl
-RUN git config --global user.name "Andre Dreyer" && git config --global user.email "git@andredreyer.com"
+RUN apk add --no-cache gum yq curl wget git gcompat openssl
+RUN git config --global user.name "André Dreyer" && git config --global user.email "git@andredreyer.com"
 
 # Install 1Password CLI
 RUN echo https://downloads.1password.com/linux/alpinelinux/stable/ >> /etc/apk/repositories && \
@@ -45,14 +45,14 @@ RUN kubectl krew install ctx && \
     kubectl krew install neat && \
     kubectl krew install score
 
-
 # Install Docker-CLI
 RUN apk add --no-cache docker-cli
 
 # Install k3d
 RUN wget -q -O - https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | ash
 
-
+# Install Shell and dotfiles
+RUN apk add --no-cache fish starship stow
 
 # Setup Starship and Fish
 #RUN mkdir -p ~/.config/fish && wget -O ~/.config/fish/config.fish https://raw.githubusercontent.com/dr3dr3/dotfiles/refs/heads/main/fish/config.fish
