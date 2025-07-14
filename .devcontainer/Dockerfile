@@ -45,6 +45,15 @@ RUN kubectl krew install ctx && \
     kubectl krew install neat && \
     kubectl krew install score
 
+
+# Install Docker-CLI
+RUN apk add --no-cache docker-cli
+
+# Install k3d
+RUN wget -q -O - https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+
+
+
 # Setup Starship and Fish
 #RUN mkdir -p ~/.config/fish && wget -O ~/.config/fish/config.fish https://raw.githubusercontent.com/dr3dr3/dotfiles/refs/heads/main/fish/config.fish
 #RUN mkdir -p ~/.config/starship && wget -O ~/.config/fish/starship.toml https://raw.githubusercontent.com/dr3dr3/dotfiles/refs/heads/main/fish/starship.toml

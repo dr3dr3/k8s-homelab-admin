@@ -7,6 +7,8 @@
 
     "workspaceFolder": "/workspace/admin",
 
+    "mounts": [ "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind" ],
+
     "postCreateCommand": "echo 'Ready'",
 
     "postStartCommand": "echo 'Started'",
