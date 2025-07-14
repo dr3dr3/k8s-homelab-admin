@@ -51,13 +51,7 @@ RUN apk add --no-cache docker-cli
 # Install k3d
 RUN wget -q -O - https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | ash
 
-# Install Shell and dotfiles
+# Install Shell and dotfiles dependencies
 RUN apk add --no-cache fish starship stow
 
-# Setup Starship and Fish
-#RUN mkdir -p ~/.config/fish && wget -O ~/.config/fish/config.fish https://raw.githubusercontent.com/dr3dr3/dotfiles/refs/heads/main/fish/config.fish
-#RUN mkdir -p ~/.config/starship && wget -O ~/.config/fish/starship.toml https://raw.githubusercontent.com/dr3dr3/dotfiles/refs/heads/main/fish/starship.toml
-#ENV STARSHIP_CONFIG=~/.config/starship.toml
-#ENV SHELL=/usr/bin/fish
-
-#ENTRYPOINT ["/usr/bin/fish"]
+ENTRYPOINT ["/usr/bin/fish"]
