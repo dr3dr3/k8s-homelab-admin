@@ -11,3 +11,6 @@ Set environment variable (using fish shell): `set -Ux OP_SERVICE_ACCOUNT_TOKEN x
 1. Choose which Kubernetes cluster you want to work on (based on directories)
 1. CD into that directory in the terminal
 
+## Useful links and references
+
+* https://www.kenmuse.com/blog/docker-from-docker-in-alpine-dev-containers/

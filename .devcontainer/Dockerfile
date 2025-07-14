@@ -50,7 +50,7 @@ RUN kubectl krew install ctx && \
 RUN apk add --no-cache docker-cli
 
 # Install k3d
-#RUN wget -q -O - https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+RUN wget -q -O - https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | ash
 
 
 
