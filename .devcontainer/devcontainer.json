@@ -21,10 +21,5 @@
                 "1Password.op-vscode"
             ]
         }
-    },
-
-    "forwardPorts": [
-        8080
-    ]
-
+    }
 }
