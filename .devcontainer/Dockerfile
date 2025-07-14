@@ -54,4 +54,6 @@ RUN wget -q -O - https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | 
 # Install Shell and dotfiles dependencies
 RUN apk add --no-cache fish starship stow
 
+ENV SHELL=/usr/bin/fish
+
 ENTRYPOINT ["/usr/bin/fish"]
