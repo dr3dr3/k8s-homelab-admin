@@ -11,7 +11,7 @@
 
     "postCreateCommand": "gum style --foreground 003 --border-foreground 003 --border rounded --align center --width 50 --margin '1 2' --padding '2 4' 'K8S Homelab Admin' 'Dev Container'",
 
-    "postStartCommand": "cd $HOME/.dotfiles && stow .",
+    "postStartCommand": "echo 'Add loading of dotfiles here fit for this project",
 
     "customizations": {
         "vscode": {
