@@ -1,5 +1,5 @@
 {
-    "name": "DR3-CLI-TOOLS",
+    "name": "DR3DR3-CLI-TOOLS",
 
     "build": {
         "dockerfile": "Dockerfile"
