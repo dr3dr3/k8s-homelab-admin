@@ -52,7 +52,7 @@ RUN apk add --no-cache docker-cli
 RUN wget -q -O - https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | ash
 
 # Install Shell and dotfiles dependencies
-RUN apk add --no-cache fish starship stow
+RUN apk add --no-cache nushell fish starship stow font-fira-code-nerd
 
 ENV SHELL=/usr/bin/fish
 
