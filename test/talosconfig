@@ -1,0 +1,8 @@
+context: test
+contexts:
+  test:
+    endpoints:
+    - '1'
+    ca: op://homelab-test/test.talos.ca/notes
+    crt: op://homelab-test/test.talos.crt/notes
+    key: op://homelab-test/test.talos.key/notes

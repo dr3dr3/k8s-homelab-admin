@@ -1,0 +1,7 @@
+cluster-types:
+  - k3d-local
+  - talos-baremetal
+  
+talos-defaults:
+  schemeid: "xxx"
+  version: "1.10.5"
