@@ -5,7 +5,7 @@ LABEL maintainer="André Dreyer"
 
 # Install basic utilities
 RUN apk add --no-cache gum yq curl wget git gcompat openssl
-RUN git config --global user.name "André Dreyer" && git config --global user.email "git@andredreyer.com"
+RUN git config --global user.name "André Dreyer" && git config --global user.email "github@andredreyer.com"
 
 # Install 1Password CLI
 RUN echo https://downloads.1password.com/linux/alpinelinux/stable/ >> /etc/apk/repositories && \
@@ -57,3 +57,4 @@ RUN apk add --no-cache nushell fish starship stow font-fira-code-nerd
 ENV SHELL=/usr/bin/fish
 
 ENTRYPOINT ["/usr/bin/fish"]
+
