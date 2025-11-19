@@ -9,8 +9,6 @@
 
     "mounts": [ "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind" ],
 
-    "postCreateCommand": "gum style --foreground 003 --border-foreground 003 --border rounded --align center --width 50 --margin '1 2' --padding '2 4' 'K8S Homelab Admin' 'Dev Container'",
-
     "customizations": {
         "vscode": {
             "extensions": [

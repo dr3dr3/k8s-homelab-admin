@@ -3,10 +3,10 @@ debug: false
 persist: true
 machine:
   type: worker
-  token: op://k8s-homelab-prod/worker.machine.token.k8s-homelab-prod/notes
+  token: op://homelab/k8s-homelab-production.worker.machine.token/notes
   ca:
-    crt: op://k8s-homelab-prod/worker.machine.ca.crt.k8s-homelab-prod/notes
-    key: ""
+    crt: op://homelab/k8s-homelab-production.worker.machine.ca.crt/notes
+    key: ''
   certSANs: []
   kubelet:
     image: ghcr.io/siderolabs/kubelet:v1.33.2
@@ -14,9 +14,9 @@ machine:
     disableManifestsDirectory: true
   network: {}
   install:
-    disk: /dev/nvme0n1
+    disk: /dev/sda
     image: factory.talos.dev/installer/376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba:v1.10.5
-    wipe: true
+    wipe: false
   registries: {}
   features:
     rbac: true
@@ -30,21 +30,21 @@ machine:
       enabled: true
       forwardKubeDNSToHost: true
 cluster:
-  id: op://k8s-homelab-prod/worker.cluster.id.k8s-homelab-prod/notes
-  secret: op://k8s-homelab-prod/worker.cluster.secret.k8s-homelab-prod/notes
+  id: op://homelab/k8s-homelab-production.worker.cluster.id/notes
+  secret: op://homelab/k8s-homelab-production.worker.cluster.secret/notes
   controlPlane:
-    endpoint: https://192.168.8.174:6443
-  clusterName: k8s-homelab-prod
+    endpoint: op://homelab/k8s-homelab-production.talos.api.endpoint/notes
+  clusterName: k8s-homelab-production
   network:
     dnsDomain: cluster.local
     podSubnets:
-      - 10.244.0.0/16
+    - 10.244.0.0/16
     serviceSubnets:
-      - 10.96.0.0/12
-  token: op://k8s-homelab-prod/worker.cluster.token.k8s-homelab-prod/notes
+    - 10.96.0.0/12
+  token: op://homelab/k8s-homelab-production.worker.cluster.token/notes
   ca:
-    crt: op://k8s-homelab-prod/worker.cluster.ca.crt.k8s-homelab-prod/notes
-    key: ""
+    crt: op://homelab/k8s-homelab-production.worker.cluster.ca.crt/notes
+    key: ''
   discovery:
     enabled: true
     registries:

@@ -3,8 +3,12 @@ FROM alpine:${ALPINE_VERSION}
 
 LABEL maintainer="André Dreyer"
 
+# Fish Shell
+RUN apk update && apk add fish
+
 # Install basic utilities
 RUN apk add --no-cache gum yq curl wget git gcompat openssl
+
 RUN git config --global user.name "André Dreyer" && git config --global user.email "github@andredreyer.com"
 
 # Install 1Password CLI
@@ -51,8 +55,11 @@ RUN apk add --no-cache docker-cli
 # Install k3d
 RUN wget -q -O - https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | ash
 
-# Install Shell and dotfiles dependencies
-RUN apk add --no-cache nushell fish starship stow font-fira-code-nerd
+# Install Helm
+RUN apk add --no-cache helm
+
+# Install git and configure user
+RUN apk add git && git config --global user.name "André Dreyer" && git config --global user.email "github@andredreyer.com"
 
 ENV SHELL=/usr/bin/fish
 

@@ -1,0 +1,100 @@
+version: v1alpha1
+debug: false
+persist: true
+machine:
+  type: controlplane
+  token: op://homelab/k8s-homelab-production.controlplane.machine.token/notes
+  ca:
+    crt: op://homelab/k8s-homelab-production.controlplane.machine.ca.crt/notes
+    key: op://homelab/k8s-homelab-production.controlplane.machine.ca.key/notes
+  certSANs: []
+  kubelet:
+    image: ghcr.io/siderolabs/kubelet:v1.33.2
+    defaultRuntimeSeccompProfileEnabled: true
+    disableManifestsDirectory: true
+  network: {}
+  install:
+    disk: /dev/mmcblk0
+    image: factory.talos.dev/installer/376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba:v1.10.5
+    wipe: true
+  registries: {}
+  features:
+    rbac: true
+    stableHostname: true
+    apidCheckExtKeyUsage: true
+    diskQuotaSupport: true
+    kubePrism:
+      enabled: true
+      port: 7445
+    hostDNS:
+      enabled: true
+      forwardKubeDNSToHost: true
+  nodeLabels:
+    node.kubernetes.io/exclude-from-external-load-balancers: ''
+cluster:
+  id: op://homelab/k8s-homelab-production.controlplane.cluster.id/notes
+  secret: op://homelab/k8s-homelab-production.controlplane.cluster.secret/notes
+  controlPlane:
+    endpoint: op://homelab/k8s-homelab-production.talos.api.endpoint/notes
+  clusterName: k8s-homelab-production
+  network:
+    dnsDomain: cluster.local
+    podSubnets:
+    - 10.244.0.0/16
+    serviceSubnets:
+    - 10.96.0.0/12
+  token: op://homelab/k8s-homelab-production.controlplane.cluster.token/notes
+  secretboxEncryptionSecret: op://homelab/k8s-homelab-production.controlplane.cluster.secretbox/notes
+  ca:
+    crt: op://homelab/k8s-homelab-production.controlplane.cluster.ca.crt/notes
+    key: op://homelab/k8s-homelab-production.controlplane.cluster.ca.key/notes
+  aggregatorCA:
+    crt: op://homelab/k8s-homelab-production.controlplane.cluster.aggregatorCA.crt/notes
+    key: op://homelab/k8s-homelab-production.controlplane.cluster.aggregatorCA.key/notes
+  serviceAccount:
+    key: op://homelab/k8s-homelab-production.controlplane.cluster.service-account.key/notes
+  apiServer:
+    image: registry.k8s.io/kube-apiserver:v1.33.2
+    certSANs:
+    - op://homelab/k8s-homelab-production.talos.ip.endpoint/notes
+    disablePodSecurityPolicy: true
+    admissionControl:
+    - name: PodSecurity
+      configuration:
+        apiVersion: pod-security.admission.config.k8s.io/v1alpha1
+        defaults:
+          audit: restricted
+          audit-version: latest
+          enforce: baseline
+          enforce-version: latest
+          warn: restricted
+          warn-version: latest
+        exemptions:
+          namespaces:
+          - kube-system
+          runtimeClasses: []
+          usernames: []
+        kind: PodSecurityConfiguration
+    auditPolicy:
+      apiVersion: audit.k8s.io/v1
+      kind: Policy
+      rules:
+      - level: Metadata
+  controllerManager:
+    image: registry.k8s.io/kube-controller-manager:v1.33.2
+  proxy:
+    image: registry.k8s.io/kube-proxy:v1.33.2
+  scheduler:
+    image: registry.k8s.io/kube-scheduler:v1.33.2
+  discovery:
+    enabled: true
+    registries:
+      kubernetes:
+        disabled: true
+      service: {}
+  etcd:
+    ca:
+      crt: op://homelab/k8s-homelab-production.controlplane.cluster.etcd.ca.crt/notes
+      key: op://homelab/k8s-homelab-production.controlplane.cluster.etcd.ca.key/notes
+  extraManifests: []
+  inlineManifests: []

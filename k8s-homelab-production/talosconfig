@@ -1,0 +1,8 @@
+context: k8s-homelab-production
+contexts:
+  k8s-homelab-production:
+    endpoints:
+    - op://homelab/k8s-homelab-production.talos.ip.endpoint/notes
+    ca: op://homelab/k8s-homelab-production.talos.ca/notes
+    crt: op://homelab/k8s-homelab-production.talos.crt/notes
+    key: op://homelab/k8s-homelab-production.talos.key/notes

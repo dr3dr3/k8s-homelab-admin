@@ -13,4 +13,4 @@ Set environment variable (using fish shell): `set -Ux OP_SERVICE_ACCOUNT_TOKEN x
 
 ## Useful links and references
 
-* https://www.kenmuse.com/blog/docker-from-docker-in-alpine-dev-containers/
+TBA
