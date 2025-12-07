@@ -9,15 +9,10 @@ RUN apk update && apk add fish
 # Install basic utilities
 RUN apk add --no-cache gum yq curl wget git gcompat openssl
 
-RUN git config --global user.name "André Dreyer" && git config --global user.email "github@andredreyer.com"
-
 # Install 1Password CLI
 RUN echo https://downloads.1password.com/linux/alpinelinux/stable/ >> /etc/apk/repositories && \
     wget https://downloads.1password.com/linux/keys/alpinelinux/support@1password.com-61ddfc31.rsa.pub -P /etc/apk/keys && \
     apk update && apk add 1password-cli
-
-# Install GitHub CLI
-RUN apk add --no-cache github-cli
 
 # Install Talosctl
 RUN curl -sL https://talos.dev/install | sh
@@ -59,7 +54,10 @@ RUN wget -q -O - https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | 
 RUN apk add --no-cache helm
 
 # Install git and configure user
-RUN apk add git && git config --global user.name "André Dreyer" && git config --global user.email "github@andredreyer.com"
+RUN apk add git github-cli && git config --global user.name "André Dreyer" && git config --global user.email "github@andredreyer.com"
+
+# Install Nushell
+RUN apk add --no-cache nushell
 
 ENV SHELL=/usr/bin/fish
 

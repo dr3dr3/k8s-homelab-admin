@@ -16,7 +16,8 @@
                 "github.copilot",
                 "redhat.vscode-yaml",
                 "ms-kubernetes-tools.vscode-kubernetes-tools",
-                "1Password.op-vscode"
+                "1Password.op-vscode",
+                "TheNuProjectContributors.vscode-nushell-lang"
             ],
             "settings": {
                 "editor.fontFamily": "FiraCode Nerd Font, monospace",
