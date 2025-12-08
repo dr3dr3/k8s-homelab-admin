@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# ============================================================================
+# DEPRECATED: This bash script is deprecated and will be removed in a future version.
+# Please use the Nushell CLI instead: `nu cli.nu`
+# See README.md for migration instructions.
+# ============================================================================
+
 # Pre-requisites
 # CLUSTER env var is set to the cluster name
 # 1Password vault is created
