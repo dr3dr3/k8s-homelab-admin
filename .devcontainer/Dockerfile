@@ -1,5 +1,4 @@
-ARG ALPINE_VERSION=latest
-FROM alpine:${ALPINE_VERSION}
+FROM node:alpine
 
 LABEL maintainer="André Dreyer"
 
@@ -59,7 +58,11 @@ RUN apk add git github-cli && git config --global user.name "André Dreyer" && g
 # Install Nushell
 RUN apk add --no-cache nushell
 
+# Install AI Assistants CLIs
+RUN npm install -g @anthropic-ai/claude-code
+
 ENV SHELL=/usr/bin/fish
 
 ENTRYPOINT ["/usr/bin/fish"]
+
 
