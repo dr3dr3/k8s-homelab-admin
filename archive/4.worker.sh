@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# ============================================================================
+# DEPRECATED: This bash script is deprecated and will be removed in a future version.
+# Please use the Nushell CLI instead: `nu cli.nu`
+# See README.md for migration instructions.
+# ============================================================================
+
 target="worker.machine.token.$CLUSTER"
 op item create --category "Secure Note" --title $target --vault $CLUSTER "notes=$(yq '.machine.token' ./$CLUSTER/worker.yaml)"
 value="op://$CLUSTER/$target/notes" yq -i '.machine.token = env(value) ' ./$CLUSTER/worker.yaml
