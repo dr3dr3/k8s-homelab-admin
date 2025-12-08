@@ -12,8 +12,13 @@
     "customizations": {
         "vscode": {
             "extensions": [
+                "ms-vscode.live-server",
+                "esbenp.prettier-vscode",
                 "github.vscode-pull-request-github",
+                "ms-azuretools.vscode-docker",
                 "github.copilot",
+                "Anthropic.claude-code",
+                "DavidAnson.vscode-markdownlint",
                 "redhat.vscode-yaml",
                 "ms-kubernetes-tools.vscode-kubernetes-tools",
                 "1Password.op-vscode",
@@ -32,3 +37,4 @@
         }
     }
 }
+
