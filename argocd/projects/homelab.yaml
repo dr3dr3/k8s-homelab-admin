@@ -1,0 +1,47 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: homelab
+  namespace: argocd
+  # Finalizer ensures project is not deleted while apps exist
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Homelab Kubernetes cluster applications
+
+  # Source repositories that applications in this project can pull manifests from
+  sourceRepos:
+    - https://github.com/dr3dr3/k8s-homelab-admin.git
+    - '*'  # Allow Helm charts from any repo (optional, can be restricted)
+
+  # Destinations where applications can be deployed
+  destinations:
+    - namespace: '*'
+      server: https://kubernetes.default.svc
+      name: in-cluster
+
+  # Cluster resource whitelist (what can be created)
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
+
+  # Namespace resource whitelist (empty = all allowed)
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
+
+  # Sync windows - define when syncs are allowed (optional)
+  # syncWindows:
+  #   - kind: allow
+  #     schedule: '* * * * *'
+  #     duration: 24h
+  #     applications:
+  #       - '*'
+
+  # Orphaned resources monitoring
+  orphanedResources:
+    warn: true
+
+  # Signature verification (optional, requires setup)
+  # signatureKeys:
+  #   - keyID: <key-id>

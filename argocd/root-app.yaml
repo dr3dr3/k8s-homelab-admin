@@ -1,0 +1,67 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: root-app
+  namespace: argocd
+  # Finalizer ensures proper cleanup
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    app: root
+    pattern: app-of-apps
+spec:
+  # Project this application belongs to
+  project: default  # Root app uses default project
+
+  # Source repository configuration
+  source:
+    repoURL: https://github.com/dr3dr3/k8s-homelab-admin.git
+    targetRevision: main
+    path: argocd/apps  # Points to directory containing all app manifests
+
+    # Directory/glob configuration
+    directory:
+      # Recursively process all YAML files in this directory
+      recurse: true
+      # Include specific file patterns
+      include: '*.yaml'
+
+  # Destination cluster and namespace
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd  # Apps are deployed to argocd namespace but manage resources elsewhere
+
+  # Sync policy configuration
+  syncPolicy:
+    # Automated sync on git changes
+    automated:
+      # Automatically delete application resources removed from git
+      prune: true
+      # Automatically revert manual changes to applications
+      selfHeal: true
+      # Allow deletion of applications
+      allowEmpty: false
+
+    # Sync options
+    syncOptions:
+      # Create namespace if needed (though argocd namespace should exist)
+      - CreateNamespace=true
+      # Validate resources
+      - Validate=true
+
+    # Retry configuration
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+
+  # Additional info for UI
+  info:
+    - name: Description
+      value: Root application managing all homelab applications via app-of-apps pattern
+    - name: Repository
+      value: https://github.com/dr3dr3/k8s-homelab-admin
+    - name: Pattern
+      value: App-of-Apps (manages argocd/apps/*.yaml)
