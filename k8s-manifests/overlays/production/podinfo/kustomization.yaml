@@ -1,0 +1,6 @@
+resources:
+  - ../../../base/podinfo
+
+# Example: customize for production
+patchesStrategicMerge:
+#  - replica-patch.yaml

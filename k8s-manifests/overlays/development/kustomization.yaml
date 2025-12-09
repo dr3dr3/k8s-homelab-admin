@@ -1,0 +1,65 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+metadata:
+  name: development
+
+# Reference the base manifests
+bases:
+  - ../../base
+
+# Add development-specific labels
+commonLabels:
+  environment: development
+  tier: dev
+
+# Add development-specific annotations
+commonAnnotations:
+  deployment.environment: development
+
+# Apply strategic merge patches for development overrides
+# patchesStrategicMerge:
+#   - patches/deployment-patch.yaml
+#   - patches/ingress-patch.yaml
+
+# Update image tags for development (use latest for fast iteration)
+# images:
+#   - name: my-app
+#     newTag: latest
+
+# Configure replicas for development (single replica for minimal resources)
+# replicas:
+#   - name: my-app
+#     count: 1
+
+# Namespace for development
+# namespace: development
+
+# ConfigMap/Secret generators for development-specific config
+# configMapGenerator:
+#   - name: app-config
+#     literals:
+#       - ENVIRONMENT=development
+#       - LOG_LEVEL=debug
+#       - DEBUG=true
+#       - API_ENDPOINT=http://localhost:3000
+
+# secretGenerator:
+#   - name: app-secrets
+#     envs:
+#       - secrets.env  # File not in git; use sealed-secrets or similar
+
+# Add prefix/suffix to resource names (optional)
+# namePrefix: dev-
+# nameSuffix: -dev
+
+# Resource names that need to be patched
+# patchesJson6902:
+#   - target:
+#       group: apps
+#       version: v1
+#       kind: Deployment
+#       name: my-app
+#     patch: |-
+#       - op: replace
+#         path: /spec/replicas
+#         value: 1

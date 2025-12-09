@@ -1,5 +1,10 @@
 #!/bin/env nu
 
+# Load environment variables from .env file if it exists
+if (".env" | path exists) {
+  load-env (open .env | lines | parse "{key}={value}" | reduce -f {} {|it, acc| $acc | insert $it.key $it.value })
+}
+
 # Helper function to retrieve and select disk from target machine
 def select-disk [cluster: string, target_ip: string] {
   "Select disk for Talos installation:" | msgbox $in "line"
@@ -89,12 +94,15 @@ def homelab [
   if ($"./($cluster)/talosconfig" | path exists) {
     "Detected cluster is Talos based..." | msgbox $in
     homelab config talosctl $cluster
-    let node = open $"./($cluster)/temp.talosconfig" | 
-      from yaml | 
-      get contexts | 
-      get $cluster | 
+    let node = open $"./($cluster)/temp.talosconfig" |
+      from yaml |
+      get contexts |
+      get $cluster |
       get endpoints.0
     talosctl kubeconfig --nodes $node --merge --force
+    "✅ Successfully connected to cluster and merged kubeconfig" | msgbox $in
+  } else {
+    "❌ No talosconfig found for this cluster" | msgbox $in "error"
   }
 
   $env.HOMELAB_ENV = 'homelab'

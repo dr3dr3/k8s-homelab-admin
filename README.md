@@ -16,19 +16,73 @@ A development container for managing Kubernetes homelab clusters using Talos Lin
 - 1Password CLI and Service Account token
 - For Talos bare metal: Physical machines or VMs with network access
 
+## Development Environment
+
+This project uses a VS Code devcontainer with all necessary tools pre-installed:
+
+**Installed Tools:**
+
+- **Kubernetes & Container Tools**: kubectl, talosctl, k3d, helm, krew plugins (ctx, ns, kor, neat, score)
+- **CLI Utilities**: gum (interactive prompts), yq (YAML processing), jq
+- **Shells**: Fish (default), Nushell (for CLI)
+- **Secrets Management**: 1Password CLI
+- **AI Assistants**: Claude Code CLI
+- **Git Tools**: GitHub CLI (gh)
+
+**VS Code Extensions:**
+
+- Anthropic Claude Code
+- Kubernetes tools (ms-kubernetes-tools.vscode-kubernetes-tools)
+- Docker, YAML, Markdown support
+- Nushell syntax highlighting
+- 1Password integration
+
+To start:
+
+1. Open the project in VS Code
+2. When prompted, click "Reopen in Container"
+3. Once loaded, enter Nushell: `nu`
+4. Source the CLI: `source cli.nu`
+
 ## Quick Start
 
-### 1. Setup 1Password
+### 1. Setup Environment Variables
 
-Set your 1Password Service Account token:
+Create a `.env` file in the workspace root with your 1Password Service Account token:
+
+```bash
+# Copy the example file
+cp .env.example .env
+
+# Edit .env and add your token
+# Get your token from: https://my.1password.com/developer-tools/infrastructure-secrets/serviceaccount
+```
+
+Your `.env` file should contain:
+
+```bash
+OP_SERVICE_ACCOUNT_TOKEN=your_service_account_token_here
+```
+
+**Important:** The `.env` file is automatically ignored by git to protect your secrets.
+
+Alternatively, you can set the environment variable in your shell:
 
 ```fish
+# For Fish shell
 set -Ux OP_SERVICE_ACCOUNT_TOKEN your_token_here
 ```
 
+```bash
+# For Bash/Zsh
+export OP_SERVICE_ACCOUNT_TOKEN=your_token_here
+```
+
+### 2. Setup 1Password Vault
+
 Create a vault named `homelab` in 1Password for storing cluster secrets.
 
-### 2. Install and Use Nushell CLI
+### 3. Install and Use Nushell CLI
 
 Enter Nushell and source the CLI:
 
@@ -41,6 +95,8 @@ The `homelab` command will now be available with the following subcommands.
 
 ## CLI Commands
 
+The `homelab` command provides several subcommands for cluster lifecycle management.
+
 ### Create a New Cluster
 
 ```nushell
@@ -48,9 +104,11 @@ homelab cluster create
 ```
 
 Interactive wizard that:
+
 - Prompts for cluster name
 - Lets you choose cluster type (k3d-local or talos-baremetal)
 - Guides you through the setup process
+- Currently only talos-baremetal is fully implemented
 
 ### Create Talos Bare Metal Cluster
 
@@ -59,17 +117,21 @@ homelab cluster create-talos-baremetal [cluster-name]
 ```
 
 Automated setup for Talos bare metal clusters:
-- Generates Talos configuration
-- Detects available disks on target machine
-- Stores all secrets in 1Password
+
+- Generates Talos configuration with optional system extensions (Tailscale)
+- Interactive disk selection on target machine (filters out USB drives and read-only disks)
+- Stores all secrets in 1Password vault
 - Bootstraps the first control plane node
-- Generates kubeconfig
+- Generates and configures kubeconfig
+- Uses `gum` for interactive prompts and `op inject` for secure secret handling
 
 **Prerequisites:**
+
 - Target machine in Talos maintenance mode
 - Reserved IP address in your router
 - Network connectivity to the target machine
-- 1Password vault configured
+- 1Password vault named `homelab` configured
+- Environment variable `OP_SERVICE_ACCOUNT_TOKEN` set
 
 ### Add Nodes to Talos Cluster
 
@@ -77,7 +139,12 @@ Automated setup for Talos bare metal clusters:
 homelab cluster talos-add-node [cluster-name]
 ```
 
-Add control plane or worker nodes to an existing Talos cluster.
+Add control plane or worker nodes to an existing Talos cluster:
+
+- Prompts for node type (control-plane or worker)
+- Interactive disk selection with safety filters
+- Applies configuration from 1Password-stored secrets
+- Automatic configuration injection using `op inject`
 
 ### Configure talosctl
 
@@ -85,15 +152,22 @@ Add control plane or worker nodes to an existing Talos cluster.
 homelab config talosctl [cluster-name]
 ```
 
-Generate temporary configuration files from 1Password secrets for using `talosctl` commands.
+Generate temporary configuration files from 1Password secrets for using `talosctl` commands:
+
+- Creates temporary `talosconfig` file (prefixed with `temp.`)
+- Injects secrets from 1Password
+- Sets up talosctl context for the specified cluster
+- Temporary files should not be committed to version control
 
 ## Workspace Structure
 
-```
+```bash
 .
 ├── cli.nu                      # Main Nushell CLI
 ├── cli-config.yaml            # CLI configuration
-├── dev.nu                     # Development utilities
+├── .devcontainer/             # Development container setup
+│   ├── Dockerfile            # Container with all tools (Talos, K8s, AI)
+│   └── devcontainer.json     # VS Code configuration
 ├── base-talos/               # Base Talos configurations
 │   └── tailscale.patch.yaml  # Tailscale extension patch
 ├── base-k3d/                 # Base k3d configurations
@@ -102,7 +176,12 @@ Generate temporary configuration files from 1Password secrets for using `talosct
 │   ├── controlplane.yaml     # Control plane config (with 1Password refs)
 │   ├── worker.yaml          # Worker config (with 1Password refs)
 │   └── talosconfig          # Talos CLI config (with 1Password refs)
-└── *.sh                     # Legacy shell scripts
+├── archive/                  # Deprecated bash scripts
+│   └── README.md            # Migration guide
+└── docs/                     # Documentation (Diataxis structure)
+    ├── explanations/
+    ├── how-to-guides/
+    └── reference/
 ```
 
 ## Configuration
@@ -114,12 +193,14 @@ Edit `cli-config.yaml` to customize:
 - **System extensions**: Talos extensions like Tailscale
 
 Current defaults:
+
 - Talos version: 1.10.5
 - Extensions: Tailscale
 
 ## Security
 
 All sensitive cluster information is stored in 1Password:
+
 - Talos certificates and keys
 - Cluster tokens and secrets
 - Machine certificates
@@ -128,9 +209,22 @@ All sensitive cluster information is stored in 1Password:
 
 Configuration files use 1Password references (e.g., `op://homelab/cluster.talos.ca/notes`) and are injected at runtime using `op inject`.
 
+## Legacy Scripts
+
+Previous bash-based automation scripts have been moved to the `/archive/` directory. These scripts are deprecated in favor of the Nushell CLI:
+
+- Original scripts: `0.start.sh` through `9.tailscale.sh`
+- See [archive/README.md](archive/README.md) for:
+  - List of archived scripts and their purposes
+  - Migration path to Nushell CLI equivalents
+  - When legacy scripts might still be useful
+
+All new development focuses on the `cli.nu` Nushell implementation.
+
 ## Manual Operations
 
 For advanced Talos operations, see [TALOS.md](TALOS.md) for detailed instructions on:
+
 - Disk selection
 - Tailscale setup
 - Talos upgrades
@@ -180,6 +274,29 @@ talosctl get nodename --nodes 192.168.10.174
 # Interactive dashboard
 talosctl dashboard --nodes 192.168.10.174
 ```
+
+## Documentation
+
+This project follows the [Diataxis documentation framework](https://diataxis.fr/) with structured docs in `/docs/`:
+
+**How-To Guides:**
+
+- [Upgrade Talos and Kubernetes](docs/how-to-guides/upgrade-talos-and-kubernetes.md)
+
+**Reference:**
+
+- [Nushell CLI Review & Recommendations](docs/reference/nushell-cli-review-recommendations.md) - 21 improvement recommendations
+- [ADR-001: Networking Design](docs/reference/architecture-decision-records/ADR-001-networking-design.md)
+
+**Legacy Documentation:**
+
+- [TALOS.md](TALOS.md) - Scratch pad for Talos operations
+- [archive/README.md](archive/README.md) - Information about deprecated bash scripts
+
+## Known Limitations
+
+- **k3d-local cluster type**: Configuration exists but creation is not yet implemented (placeholder only)
+- **Cluster management commands**: `homelab cluster up`, `stop`, and `delete` are placeholders awaiting implementation
 
 ## References
 
