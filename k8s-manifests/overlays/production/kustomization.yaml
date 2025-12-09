@@ -1,0 +1,64 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+metadata:
+  name: production
+
+# Reference the base manifests
+bases:
+  - ../../base
+
+# Add production-specific labels
+commonLabels:
+  environment: production
+  tier: prod
+
+# Add production-specific annotations
+commonAnnotations:
+  deployment.environment: production
+
+# Apply strategic merge patches for production overrides
+# patchesStrategicMerge:
+#   - patches/deployment-patch.yaml
+#   - patches/ingress-patch.yaml
+
+# Update image tags for production
+# images:
+#   - name: my-app
+#     newTag: v1.0.0
+
+# Configure replicas for production (high availability)
+# replicas:
+#   - name: my-app
+#     count: 3
+
+# Namespace for production
+# namespace: production
+
+# ConfigMap/Secret generators for production-specific config
+# configMapGenerator:
+#   - name: app-config
+#     literals:
+#       - ENVIRONMENT=production
+#       - LOG_LEVEL=info
+#       - API_ENDPOINT=https://api.example.com
+
+# secretGenerator:
+#   - name: app-secrets
+#     envs:
+#       - secrets.env  # File not in git; use sealed-secrets or similar
+
+# Add prefix/suffix to resource names (optional)
+# namePrefix: prod-
+# nameSuffix: -prod
+
+# Resource names that need to be patched
+# patchesJson6902:
+#   - target:
+#       group: apps
+#       version: v1
+#       kind: Deployment
+#       name: my-app
+#     patch: |-
+#       - op: replace
+#         path: /spec/replicas
+#         value: 3
