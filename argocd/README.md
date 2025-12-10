@@ -4,7 +4,7 @@ This directory contains ArgoCD manifests for managing the homelab cluster using 
 
 ## Structure
 
-```
+```bash
 argocd/
 ├── README.md                      # This file
 ├── bootstrap.sh                   # Bootstrap script to install ArgoCD
@@ -31,6 +31,7 @@ argocd/
 ```
 
 This script will:
+
 - Install ArgoCD in the `argocd` namespace
 - Wait for ArgoCD to be ready
 - Apply the root application (app-of-apps pattern)
@@ -63,7 +64,7 @@ argocd account update-password
 
 The `root-app.yaml` is the parent application that manages all other applications:
 
-```
+```bash
 root-app (ArgoCD Application)
 └── watches: argocd/apps/*.yaml
     ├── podinfo-production
@@ -72,6 +73,7 @@ root-app (ArgoCD Application)
 ```
 
 **Benefits:**
+
 - Single `kubectl apply` to bootstrap entire system
 - All applications managed via GitOps
 - Easy to add new applications (just add YAML in `argocd/apps/`)
@@ -144,6 +146,7 @@ argocd app history podinfo-production
 ### UI Dashboard
 
 The ArgoCD UI provides:
+
 - Visual application health status
 - Sync status and history
 - Resource tree view

@@ -52,6 +52,11 @@ RUN wget -q -O - https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | 
 # Install Helm
 RUN apk add --no-cache helm
 
+# Install Argo CLI
+RUN curl -sSL -o argocd-linux-amd64 https://github.com/argoproj/argo-cd/releases/latest/download/argocd-linux-amd64 && \
+    chmod +x argocd-linux-amd64 && \
+    mv argocd-linux-amd64 /usr/local/bin/argocd
+
 # Install git and configure user
 RUN apk add git github-cli && git config --global user.name "André Dreyer" && git config --global user.email "github@andredreyer.com"
 

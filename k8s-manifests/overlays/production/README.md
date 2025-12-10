@@ -27,7 +27,7 @@ The production overlay customizes base manifests for production environments wit
 
 ## Structure
 
-```
+```bash
 overlays/production/
 ├── kustomization.yaml          # Main kustomization file
 ├── patches/                     # Directory for patch files (optional)
@@ -40,6 +40,7 @@ overlays/production/
 ## Common Patches for Production
 
 ### Increase Replicas
+
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -50,6 +51,7 @@ spec:
 ```
 
 ### Add Resource Limits
+
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -70,7 +72,9 @@ spec:
 ```
 
 ### Update Image Tag
+
 In `kustomization.yaml`:
+
 ```yaml
 images:
   - name: my-app
