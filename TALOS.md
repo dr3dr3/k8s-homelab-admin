@@ -2,7 +2,7 @@
 
 ## Get TALOS ISO
 
-From: https://factory.talos.dev/
+From: `https://factory.talos.dev/`
 
 Talos schematic ID for base AMD64 v10.4.0: 376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba
 
@@ -54,7 +54,7 @@ Only do this ONCE! (Not for each VM)
 export CLUSTER="k8s-homelab-dev1"
 export CP1_IP="192.168.8.108"
 export $TALOS_SCHEMEID="376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba"
-export $TALOS_VERSION="v1.10.5"
+export $TALOS_VERSION="v1.11.5"
 talosctl gen config $CLUSTER https://$CP1_IP:6443 --install-image=factory.talos.dev/installer/$TALOS_SCHEMEID:$TALOS_VERSION
 export TALOSCONFIG="./talosconfig"
 

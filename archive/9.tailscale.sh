@@ -6,7 +6,7 @@
 # See README.md for migration instructions.
 # ============================================================================
 
-talosctl upgrade --image factory.talos.dev/installer/4a0d65c669d46663f377e7161e50cfd570c401f26fd9e7bda34a0216b6f1922b:v1.10.5 -m powercycle -f -n $MACHINE_IP -e $MACHINE_IP 
+talosctl upgrade --image factory.talos.dev/installer/4a0d65c669d46663f377e7161e50cfd570c401f26fd9e7bda34a0216b6f1922b:v1.11.5 -m powercycle -f -n $MACHINE_IP -e $MACHINE_IP 
 
 cp ./base/tailscale.patch.yaml ./$CLUSTER/tailscale.patch.yaml
 

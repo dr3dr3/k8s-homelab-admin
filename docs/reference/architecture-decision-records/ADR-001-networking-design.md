@@ -10,6 +10,7 @@
 The Kubernetes homelab consists of bare-metal clusters managed by Talos Linux. The primary use case is running applications for personal use, with occasional access by family members. The infrastructure needs to balance security, accessibility, and operational simplicity while avoiding the complexity and security risks of public internet exposure.
 
 Key requirements:
+
 - Secure cluster access limited to authorized users
 - Support for personal and family use cases
 - Ability to pull container images and Helm charts from the internet
@@ -32,6 +33,7 @@ All authorized users and cluster nodes will connect to a private Tailscale mesh 
 ### 2. **Cluster Scope**
 
 This networking design applies to:
+
 - **Production cluster**: `k8s-homelab-production` (currently deployed)
 - **Staging cluster**: `k8s-homelab-staging` (planned)
 
@@ -139,7 +141,7 @@ apiVersion: v1alpha1
 kind: ExtensionServiceConfig
 name: tailscale
 environment:
-  - TS_AUTHKEY=op://kubernetes/tailscale.patch.authkey/notes
+  - TS_AUTHKEY=op://homelab/tailscale.patch.authkey/notes
 ```
 
 Authentication keys are injected from 1Password during cluster configuration.
@@ -153,6 +155,7 @@ Authentication keys are injected from 1Password during cluster configuration.
 ### Exit Node Configuration
 
 An exit node should be configured in the Tailnet to provide internet access:
+
 - Can be a dedicated device/VM or shared with other purposes
 - Should have reliable internet connectivity
 - Traffic from cluster nodes routes through this exit node
@@ -164,6 +167,7 @@ An exit node should be configured in the Tailnet to provide internet access:
 **Description**: Expose cluster services via LoadBalancer/NodePort with an ingress controller (NGINX, Traefik) and Let's Encrypt certificates.
 
 **Rejected because**:
+
 - Significant security risk for a homelab
 - Requires port forwarding on router
 - Exposes attack surface to the internet
@@ -175,6 +179,7 @@ An exit node should be configured in the Tailnet to provide internet access:
 **Description**: Self-hosted VPN server for cluster access.
 
 **Rejected because**:
+
 - More complex to set up and maintain
 - Requires VPN server infrastructure
 - Manual peer management
@@ -186,6 +191,7 @@ An exit node should be configured in the Tailnet to provide internet access:
 **Description**: Use Cloudflare Tunnel to expose services via Cloudflare's edge network.
 
 **Rejected because**:
+
 - Still exposes services to the internet (via Cloudflare)
 - Requires Cloudflare account and configuration
 - Adds external dependency beyond Tailscale
@@ -196,6 +202,7 @@ An exit node should be configured in the Tailnet to provide internet access:
 **Description**: Expose services on local network only, no remote access.
 
 **Rejected because**:
+
 - Doesn't provide remote access for administrator
 - Family members can only access from home network
 - Doesn't solve egress routing

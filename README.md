@@ -194,7 +194,7 @@ Edit `cli-config.yaml` to customize:
 
 Current defaults:
 
-- Talos version: 1.10.5
+- Talos version: 1.11.5
 - Extensions: Tailscale
 
 ## Security
@@ -281,12 +281,22 @@ This project follows the [Diataxis documentation framework](https://diataxis.fr/
 
 **How-To Guides:**
 
+- [Layered ArgoCD Quick Start](docs/how-to-guides/layered-argocd-quick-start.md) - Get started implementing the three-layer ArgoCD architecture
 - [Upgrade Talos and Kubernetes](docs/how-to-guides/upgrade-talos-and-kubernetes.md)
+- [Expose ArgoCD via Tailscale Ingress](docs/how-to-guides/expose-argocd-via-tailscale-ingress.md)
 
 **Reference:**
 
+- [Implementation Plan](IMPLEMENTATION_PLAN.md) - Detailed phased implementation plan for layered ArgoCD architecture
+- [Implementation Status](IMPLEMENTATION_STATUS.md) - Current status tracker for implementation phases
 - [Nushell CLI Review & Recommendations](docs/reference/nushell-cli-review-recommendations.md) - 21 improvement recommendations
 - [ADR-001: Networking Design](docs/reference/architecture-decision-records/ADR-001-networking-design.md)
+- [ADR-002: GitOps ArgoCD Deployment Strategy](docs/reference/architecture-decision-records/ADR-002-gitops-argocd-deployment-strategy.md)
+- [ADR-003: Layered ArgoCD Structure](docs/reference/architecture-decision-records/ADR-003-layered-argocd-structure.md)
+
+**Explanations:**
+
+- [Diataxis for Documentation](docs/explanations/diataxis-for-documentation.md)
 
 **Legacy Documentation:**
 

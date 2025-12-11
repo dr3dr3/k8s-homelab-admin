@@ -65,7 +65,9 @@ RUN apk add --no-cache nushell
 
 # Install AI Assistants CLIs
 RUN npm install -g @anthropic-ai/claude-code
+RUN npm install -g @github/copilot
 
+# Set Fish as default shell
 ENV SHELL=/usr/bin/fish
 
 ENTRYPOINT ["/usr/bin/fish"]
