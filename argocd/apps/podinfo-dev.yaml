@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: podinfo-development
+  namespace: argocd
+  labels:
+    app: podinfo
+    environment: development
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  # Project this application belongs to
+  project: homelab
+
+  # Source repository configuration
+  source:
+    repoURL: https://github.com/dr3dr3/k8s-homelab-admin.git
+    targetRevision: main
+    path: k8s-manifests/overlays/development
+
+  # Destination cluster and namespace
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default  # Deploy podinfo to default namespace
+
+  # Sync policy configuration
+  syncPolicy:
+    # Automated sync on git changes
+    automated:
+      prune: true  # Automatically delete resources removed from git
+      selfHeal: true  # Automatically revert manual changes
+    
+    # Sync options
+    syncOptions:
+      - CreateNamespace=true  # Create namespace if it doesn't exist
+      - Validate=true  # Validate resources before applying
