@@ -25,11 +25,6 @@ This plan outlines the implementation of a **simplified GitOps approach** for th
 - ✅ Podinfo manifests in `k8s-manifests/base/podinfo/`
 - ✅ Directory `argocd/apps/` with podinfo-dev.yaml
 
-**What Needs Cleanup:**
-- ❌ `argocd/applications/` directory (not needed - complex layered structure we're not using)
-- ❌ Staging overlays in `k8s-manifests/overlays/staging` (removing staging environment)
-- ❌ `argocd/apps/podinfo-dev.yaml` points to development instead of production
-
 **Target State:**
 - Production ArgoCD Applications pointing to `k8s-manifests/overlays/production`
 - Development overlay for local k3d testing only (no ArgoCD)

@@ -4,9 +4,10 @@ metadata:
   name: base
 
 # Add common labels to all resources
-commonLabels:
-  managed-by: kustomize
-  app.kubernetes.io/version: "1.0"
+labels:
+  - pairs:
+      managed-by: kustomize
+      app.kubernetes.io/version: "1.0"
 
 # Add common annotations to all resources (optional)
 commonAnnotations:

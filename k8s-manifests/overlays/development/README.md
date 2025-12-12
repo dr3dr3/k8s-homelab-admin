@@ -133,4 +133,4 @@ kustomize build overlays/development | kubectl apply --dry-run=client -f -
 3. **Update development overlay** with new image tag if needed
 4. **Apply overlays**: `kubectl apply -k overlays/development`
 5. **Test and iterate** quickly
-6. **Promote to staging** when ready for more rigorous testing
+6. **Commit to git** when ready to deploy to production (ArgoCD will auto-sync)

@@ -1,6 +1,10 @@
 # ArgoCD Configuration
 
-This directory contains ArgoCD manifests for managing the homelab cluster using GitOps principles.
+This directory contains ArgoCD manifests for managing the **production** homelab cluster using GitOps principles.
+
+## Overview
+
+ArgoCD is used **only for the production Talos cluster**. The development k3d cluster uses `kubectl apply -k` for fast iteration without GitOps overhead.
 
 ## Structure
 
@@ -12,15 +16,22 @@ argocd/
 ├── projects/
 │   └── homelab.yaml              # ArgoCD Project definition
 └── apps/
-    └── podinfo-production.yaml   # Individual application definitions
+    └── podinfo-production.yaml   # Application definitions (points to k8s-manifests/overlays/production)
 ```
 
-## GitOps Workflow
+## GitOps Workflow (Production Only)
 
-1. **Single Source of Truth**: All manifests in `k8s-manifests/` are the desired state
-2. **Automatic Sync**: Changes merged to `main` branch are auto-deployed
+1. **Single Source of Truth**: All manifests in `k8s-manifests/overlays/production/` are the desired state
+2. **Automatic Sync**: Changes merged to `main` branch are auto-deployed to production
 3. **Self-Healing**: Manual `kubectl` changes are automatically reverted
 4. **Pruning**: Resources deleted from git are removed from cluster
+
+## Development vs Production
+
+| Environment | Cluster | Deployment Method | GitOps |
+|------------|---------|-------------------|--------|
+| Development | k3d (local) | `kubectl apply -k k8s-manifests/overlays/development` | No |
+| Production | Talos (bare metal) | ArgoCD auto-sync from git | Yes |
 
 ## Bootstrap Process
 
@@ -74,11 +85,11 @@ root-app (ArgoCD Application)
 
 **Benefits:**
 
-- Single `kubectl apply` to bootstrap entire system
-- All applications managed via GitOps
+- Single `kubectl apply` to bootstrap entire production system
+- All production applications managed via GitOps
 - Easy to add new applications (just add YAML in `argocd/apps/`)
 
-## Adding New Applications
+## Adding New Applications (Production)
 
 1. Create application manifest in `argocd/apps/`:
 
@@ -94,7 +105,7 @@ spec:
   source:
     repoURL: https://github.com/dr3dr3/k8s-homelab-admin.git
     targetRevision: main
-    path: k8s-manifests/overlays/production/myapp
+    path: k8s-manifests/overlays/production/myapp  # Points to production overlay
   destination:
     server: https://kubernetes.default.svc
     namespace: default
@@ -113,13 +124,13 @@ spec:
 
 ArgoCD automatically detects `kustomization.yaml` files and runs `kustomize build`:
 
-- **Application path**: Points to overlay directory (e.g., `k8s-manifests/overlays/production`)
-- **Kustomize builds**: Merges base + overlay automatically
+- **Application path**: Points to production overlay directory (e.g., `k8s-manifests/overlays/production`)
+- **Kustomize builds**: Merges base + production overlay automatically
 - **No changes needed**: Your existing Kustomize structure works as-is
 
 ## Sync Policies
 
-All applications use these sync policies:
+All production applications use these sync policies:
 
 - **automated.prune**: `true` - Delete resources removed from git
 - **automated.selfHeal**: `true` - Revert manual changes

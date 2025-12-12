@@ -105,11 +105,11 @@ kustomize build overlays/production | kubectl apply --dry-run=client -f -
 - [ ] Network policies are in place
 - [ ] Secrets are properly managed (not in git)
 - [ ] Monitoring and logging are configured
-- [ ] Tested in staging first
+- [ ] Tested in development first
 
 ## Important Notes
 
 - **Never commit secrets** to this repository - use sealed-secrets or external-secrets
-- **Always test in staging** before deploying to production
+- **Always test in development** before committing to git (which auto-deploys to production)
 - **Use specific image tags** (not latest) for reproducibility
 - **Document any manual steps** required for production deployment

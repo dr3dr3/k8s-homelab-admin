@@ -4,13 +4,14 @@ metadata:
   name: production
 
 # Reference the base manifests
-bases:
+resources:
   - ../../base
 
 # Add production-specific labels
-commonLabels:
-  environment: production
-  tier: prod
+labels:
+  - pairs:
+      environment: production
+      tier: prod
 
 # Add production-specific annotations
 commonAnnotations:

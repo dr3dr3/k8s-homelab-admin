@@ -1,6 +1,6 @@
 # Base Manifests
 
-This directory contains the base Kubernetes manifests that are shared across all environments (production, staging, development).
+This directory contains the base Kubernetes manifests that are shared across all environments (production and development).
 
 ## Purpose
 

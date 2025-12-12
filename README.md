@@ -163,22 +163,32 @@ Generate temporary configuration files from 1Password secrets for using `talosct
 
 ```bash
 .
-├── cli.nu                      # Main Nushell CLI
-├── cli-config.yaml            # CLI configuration
-├── .devcontainer/             # Development container setup
-│   ├── Dockerfile            # Container with all tools (Talos, K8s, AI)
-│   └── devcontainer.json     # VS Code configuration
-├── base-talos/               # Base Talos configurations
-│   └── tailscale.patch.yaml  # Tailscale extension patch
-├── base-k3d/                 # Base k3d configurations
+├── cli.nu                        # Main Nushell CLI
+├── cli-config.yaml              # CLI configuration
+├── .devcontainer/               # Development container setup
+│   ├── Dockerfile              # Container with all tools (Talos, K8s, AI)
+│   └── devcontainer.json       # VS Code configuration
+├── base-talos/                 # Base Talos configurations
+│   └── tailscale.patch.yaml    # Tailscale extension patch
+├── base-k3d/                   # Base k3d configurations
 │   └── config.yaml
-├── k8s-homelab-production/   # Example cluster directory
-│   ├── controlplane.yaml     # Control plane config (with 1Password refs)
-│   ├── worker.yaml          # Worker config (with 1Password refs)
-│   └── talosconfig          # Talos CLI config (with 1Password refs)
-├── archive/                  # Deprecated bash scripts
-│   └── README.md            # Migration guide
-└── docs/                     # Documentation (Diataxis structure)
+├── k8s-homelab-production/     # Production cluster directory
+│   ├── controlplane.yaml       # Control plane config (with 1Password refs)
+│   ├── worker.yaml            # Worker config (with 1Password refs)
+│   └── talosconfig            # Talos CLI config (with 1Password refs)
+├── k8s-manifests/              # Kubernetes manifests (Kustomize)
+│   ├── base/                  # Base manifests (shared)
+│   └── overlays/
+│       ├── development/       # k3d overlay (kubectl apply -k)
+│       └── production/        # Talos overlay (ArgoCD managed)
+├── argocd/                     # ArgoCD configuration (production only)
+│   ├── bootstrap.sh           # Install ArgoCD
+│   ├── root-app.yaml          # App-of-apps pattern
+│   ├── projects/              # ArgoCD Projects
+│   └── apps/                  # Application definitions
+├── archive/                    # Deprecated bash scripts
+│   └── README.md              # Migration guide
+└── docs/                       # Documentation (Diataxis structure)
     ├── explanations/
     ├── how-to-guides/
     └── reference/
@@ -279,26 +289,26 @@ talosctl dashboard --nodes 192.168.10.174
 
 This project follows the [Diataxis documentation framework](https://diataxis.fr/) with structured docs in `/docs/`:
 
-**How-To Guides:**
+### How-To Guides
 
-- [Layered ArgoCD Quick Start](docs/how-to-guides/layered-argocd-quick-start.md) - Get started implementing the three-layer ArgoCD architecture
 - [Upgrade Talos and Kubernetes](docs/how-to-guides/upgrade-talos-and-kubernetes.md)
 - [Expose ArgoCD via Tailscale Ingress](docs/how-to-guides/expose-argocd-via-tailscale-ingress.md)
 
-**Reference:**
+### Reference
 
-- [Implementation Plan](IMPLEMENTATION_PLAN.md) - Detailed phased implementation plan for layered ArgoCD architecture
-- [Implementation Status](IMPLEMENTATION_STATUS.md) - Current status tracker for implementation phases
+- [Implementation Plan](IMPLEMENTATION_PLAN.md) - Phased implementation plan for simplified two-environment architecture
+- [Implementation Status](IMPLEMENTATION_STATUS.md) - Current implementation progress tracker
+- [Architecture Simplification Summary](ARCHITECTURE_SIMPLIFICATION_SUMMARY.md) - Details of architecture changes
 - [Nushell CLI Review & Recommendations](docs/reference/nushell-cli-review-recommendations.md) - 21 improvement recommendations
 - [ADR-001: Networking Design](docs/reference/architecture-decision-records/ADR-001-networking-design.md)
-- [ADR-002: GitOps ArgoCD Deployment Strategy](docs/reference/architecture-decision-records/ADR-002-gitops-argocd-deployment-strategy.md)
-- [ADR-003: Layered ArgoCD Structure](docs/reference/architecture-decision-records/ADR-003-layered-argocd-structure.md)
+- [ADR-002: GitOps ArgoCD Deployment Strategy](docs/reference/architecture-decision-records/ADR-002-gitops-argocd-deployment-strategy.md) - Simplified two-environment approach
+- [ADR-003: Layered ArgoCD Structure](docs/reference/architecture-decision-records/ADR-003-layered-argocd-structure.md) - **Superseded** (over-engineered for homelab)
 
-**Explanations:**
+### Explanations
 
 - [Diataxis for Documentation](docs/explanations/diataxis-for-documentation.md)
 
-**Legacy Documentation:**
+### Legacy Documentation
 
 - [TALOS.md](TALOS.md) - Scratch pad for Talos operations
 - [archive/README.md](archive/README.md) - Information about deprecated bash scripts

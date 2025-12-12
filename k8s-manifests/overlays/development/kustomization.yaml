@@ -4,13 +4,14 @@ metadata:
   name: development
 
 # Reference the base manifests
-bases:
+resources:
   - ../../base
 
 # Add development-specific labels
-commonLabels:
-  environment: development
-  tier: dev
+labels:
+  - pairs:
+      environment: development
+      tier: dev
 
 # Add development-specific annotations
 commonAnnotations:
