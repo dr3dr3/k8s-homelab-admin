@@ -86,9 +86,9 @@ kubectl get pods -l app=podinfo
 ### Phase 0 Complete When:
 - [x] `argocd/apps/` directory exists
 - [x] Podinfo Application manifest created
-- [ ] Bootstrap script runs successfully (ready to test)
-- [ ] Podinfo pods are running and healthy (pending bootstrap)
-- [ ] Can access Podinfo service (pending bootstrap)
+- [x] Bootstrap script runs successfully (ArgoCD was already installed)
+- [x] Podinfo pods are running and healthy ✅ 2 pods running
+- [x] Can access Podinfo service ✅ Service accessible on NodePort 30989
 - [x] Baseline documented
 
 ### Phase 1 Complete When:
@@ -153,20 +153,39 @@ kubectl get pods -l app=podinfo
   - Uses `homelab` ArgoCD project
   - Configured with automated sync (prune and selfHeal enabled)
   - Deploys to `default` namespace
+- Fixed `k8s-manifests/base/kustomization.yaml` to include podinfo resources
 
 **Key Decisions**:
 - Used descriptive name `podinfo-development` instead of generic name
 - Enabled automated sync for development environment (low risk)
 - Added proper finalizers and labels for ArgoCD management
 
-**Ready for Testing**:
-- Structure is now complete for bootstrap script execution
-- Next step: Run `./argocd/bootstrap.sh` to validate end-to-end deployment
-- Validation commands documented in Phase 0 section above
+**Issues Encountered & Resolved**:
+1. **Git Sync Issue**: Initial deployment failed because changes weren't committed to Git
+   - ArgoCD pulls from repository, not local filesystem
+   - Solution: Committed and pushed changes to GitHub
+2. **Cached Error**: root-app had cached error about missing `argocd/apps/` directory
+   - Solution: Deleted and recreated root-app to clear cache
+3. **Empty Kustomize Build**: Base kustomization.yaml had all resources commented out
+   - Solution: Uncommented resources section and added `podinfo/` reference
+   - This was the critical fix that enabled actual resource deployment
 
-**Files Created**:
+**Validation Results**:
+✅ ArgoCD running (7 pods in argocd namespace)
+✅ root-app: Synced and Healthy
+✅ podinfo-development Application: Synced and Healthy
+✅ Podinfo deployment: 2 pods running
+✅ Podinfo service: Accessible on NodePort 30989
+
+**Files Created/Modified**:
 - `/workspace/argocd/apps/` (directory)
 - `/workspace/argocd/apps/podinfo-dev.yaml` (Application manifest)
+- `/workspace/k8s-manifests/base/kustomization.yaml` (fixed resources section)
+- `/workspace/IMPLEMENTATION_STATUS.md` (updated with progress)
+
+**Commits**:
+- `1fac958` - Initial Phase 0 implementation
+- `34fad4a` - Fixed kustomization to include podinfo resources
 
 ### Phase 1 Notes
 - TBD
