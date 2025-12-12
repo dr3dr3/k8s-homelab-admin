@@ -1,11 +1,11 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: podinfo-development
+  name: podinfo-production
   namespace: argocd
   labels:
     app: podinfo
-    environment: development
+    environment: production
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
@@ -16,7 +16,7 @@ spec:
   source:
     repoURL: https://github.com/dr3dr3/k8s-homelab-admin.git
     targetRevision: main
-    path: k8s-manifests/overlays/development
+    path: k8s-manifests/overlays/production
 
   # Destination cluster and namespace
   destination:

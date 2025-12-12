@@ -2,7 +2,41 @@
 
 ## Status
 
-Proposed
+**Superseded by simplified architecture**
+
+This ADR is no longer being implemented. The homelab will use a simplified architecture without foundation/platform/application layers.
+
+See [ADR-002: GitOps and ArgoCD Deployment Strategy](./ADR-002-gitops-argocd-deployment-strategy.md) for the current approach.
+
+## Original Context
+
+This document originally proposed a complex three-layer architecture (Foundation, Platform, Application) mirroring Terraform patterns. After review, this was determined to be over-engineered for a homelab environment.
+
+## Current Decision (2025-12-12)
+
+**We will NOT implement the layered architecture described below.**
+
+Instead, we use a simplified approach:
+- All Kubernetes manifests in `k8s-manifests/` with base and overlay structure
+- ArgoCD only for production cluster
+- Development uses k3d with direct kubectl apply
+- No foundation/platform/application layer separation
+
+## Rationale for Change
+
+- **Over-complexity**: Three layers add unnecessary abstraction for homelab scale
+- **Operational overhead**: Multiple sync waves, projects, and applications to manage
+- **Limited benefit**: Homelab doesn't have separate teams needing distinct ownership boundaries
+- **Simpler is better**: Flat structure in `k8s-manifests/` is easier to understand and maintain
+
+---
+
+# Original ADR Content (For Reference Only)
+
+The content below represents the original proposal but is **not being implemented**.
+
+<details>
+<summary>Click to view original ADR-003 content</summary>
 
 ## Context
 
@@ -66,69 +100,78 @@ We will structure our ArgoCD applications using a three-layer architecture that 
 ### Directory Structure
 
 ```text
-argocd-applications/
+argocd/
+├── bootstrap.sh
+├── root-app.yaml
 ├── README.md
-├── foundation/
-│   ├── base/
-│   │   ├── kustomization.yaml
-│   │   ├── namespaces/
-│   │   │   ├── kustomization.yaml
-│   │   │   └── namespaces.yaml
-│   │   ├── rbac/
-│   │   │   ├── kustomization.yaml
-│   │   │   └── service-accounts.yaml
-│   │   └── network-policies/
-│   │       ├── kustomization.yaml
-│   │       └── default-deny.yaml
-│   └── overlays/
-│       ├── development/
-│       │   └── kustomization.yaml
-│       ├── staging/
-│       │   └── kustomization.yaml
-│       └── production/
-│           └── kustomization.yaml
-├── platform/
-│   ├── base/
-│   │   ├── kustomization.yaml
-│   │   ├── prometheus/
-│   │   │   ├── kustomization.yaml
-│   │   │   └── prometheus-stack.yaml
-│   │   ├── istio/
-│   │   │   ├── kustomization.yaml
-│   │   │   ├── istio-base.yaml
-│   │   │   └── istiod.yaml
-│   │   ├── cert-manager/
-│   │   │   ├── kustomization.yaml
-│   │   │   └── cert-manager.yaml
-│   │   └── external-secrets/
-│   │       ├── kustomization.yaml
-│   │       └── external-secrets-operator.yaml
-│   └── overlays/
-│       ├── development/
-│       │   └── kustomization.yaml
-│       ├── staging/
-│       │   └── kustomization.yaml
-│       └── production/
-│           └── kustomization.yaml
+├── projects/
+│   ├── homelab.yaml
+│   ├── foundation.yaml
+│   ├── platform.yaml
+│   └── applications.yaml
 ├── applications/
-│   ├── base/
-│   │   ├── kustomization.yaml
-│   │   ├── web-app/
+│   ├── README.md
+│   ├── foundation/
+│   │   ├── base/
 │   │   │   ├── kustomization.yaml
-│   │   │   ├── deployment.yaml
-│   │   │   └── service.yaml
-│   │   └── api-service/
-│   │       ├── kustomization.yaml
-│   │       ├── deployment.yaml
-│   │       └── service.yaml
-│   └── overlays/
-│       ├── development/
-│       │   └── kustomization.yaml
-│       ├── staging/
-│       │   └── kustomization.yaml
-│       └── production/
-│           └── kustomization.yaml
-└── argocd-apps/
+│   │   │   ├── namespaces/
+│   │   │   │   ├── kustomization.yaml
+│   │   │   │   └── namespaces.yaml
+│   │   │   ├── rbac/
+│   │   │   │   ├── kustomization.yaml
+│   │   │   │   └── service-accounts.yaml
+│   │   │   └── network-policies/
+│   │   │       ├── kustomization.yaml
+│   │   │       └── default-deny.yaml
+│   │   └── overlays/
+│   │       ├── development/
+│   │       │   └── kustomization.yaml
+│   │       ├── staging/
+│   │       │   └── kustomization.yaml
+│   │       └── production/
+│   │           └── kustomization.yaml
+│   ├── platform/
+│   │   ├── base/
+│   │   │   ├── kustomization.yaml
+│   │   │   ├── prometheus/
+│   │   │   │   ├── kustomization.yaml
+│   │   │   │   └── prometheus-stack.yaml
+│   │   │   ├── istio/
+│   │   │   │   ├── kustomization.yaml
+│   │   │   │   ├── istio-base.yaml
+│   │   │   │   └── istiod.yaml
+│   │   │   ├── cert-manager/
+│   │   │   │   ├── kustomization.yaml
+│   │   │   │   └── cert-manager.yaml
+│   │   │   └── external-secrets/
+│   │   │       ├── kustomization.yaml
+│   │   │       └── external-secrets-operator.yaml
+│   │   └── overlays/
+│   │       ├── development/
+│   │       │   └── kustomization.yaml
+│   │       ├── staging/
+│   │       │   └── kustomization.yaml
+│   │       └── production/
+│   │           └── kustomization.yaml
+│   └── applications/
+│       ├── base/
+│       │   ├── kustomization.yaml
+│       │   ├── web-app/
+│       │   │   ├── kustomization.yaml
+│       │   │   ├── deployment.yaml
+│       │   │   └── service.yaml
+│       │   └── api-service/
+│       │       ├── kustomization.yaml
+│       │       ├── deployment.yaml
+│       │       └── service.yaml
+│       └── overlays/
+│           ├── development/
+│           │   └── kustomization.yaml
+│           ├── staging/
+│           │   └── kustomization.yaml
+│           └── production/
+│               └── kustomization.yaml
+└── apps/
     ├── development/
     │   ├── foundation.yaml
     │   ├── platform.yaml
@@ -162,7 +205,7 @@ spec:
   source:
     repoURL: https://github.com/your-org/gitops-repo
     targetRevision: main
-    path: foundation/overlays/development
+    path: argocd/applications/foundation/overlays/development
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
@@ -189,7 +232,7 @@ spec:
   source:
     repoURL: https://github.com/your-org/gitops-repo
     targetRevision: main
-    path: platform/overlays/development
+    path: argocd/applications/platform/overlays/development
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
@@ -216,7 +259,7 @@ spec:
   source:
     repoURL: https://github.com/your-org/gitops-repo
     targetRevision: main
-    path: applications/overlays/development
+    path: argocd/applications/applications/overlays/development
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
@@ -355,3 +398,10 @@ spec:
 - ADR: Terraform Layer Separation Strategy
 - ADR: GitOps Tool Selection (ArgoCD vs Flux)
 - ADR: Kubernetes Manifest Management (Helm vs Kustomize)
+
+</details>
+
+---
+
+**Superseded**: 2025-12-12  
+**Superseded By**: [ADR-002: GitOps and ArgoCD Deployment Strategy](./ADR-002-gitops-argocd-deployment-strategy.md)

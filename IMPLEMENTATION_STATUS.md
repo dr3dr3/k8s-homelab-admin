@@ -1,8 +1,8 @@
-# Implementation Status: Layered ArgoCD Architecture
+# Implementation Status: Simplified GitOps Architecture
 
 **Last Updated**: December 12, 2025  
-**Current Phase**: Phase 0 Complete - Ready for Bootstrap Testing  
-**Status**: 🟢 Phase 0 Complete
+**Current Phase**: Phase 1 - Cleanup Workspace  
+**Status**: 🟡 In Progress
 
 ---
 
@@ -10,121 +10,189 @@
 
 | Phase | Status | Duration | Start Date | Completion Date |
 |-------|--------|----------|------------|-----------------|
-| Phase 0: Quick Win | 🟢 Complete | 1 day | 2024-12-12 | 2024-12-12 |
-| Phase 1: Foundation Structure | 🔴 Not Started | 2-3 days | - | - |
-| Phase 2: Application Migration | 🔴 Not Started | 1-2 days | - | - |
-| Phase 3: Foundation - Namespaces | 🔴 Not Started | 2 days | - | - |
-| Phase 4: Platform - Observability | 🔴 Not Started | 4-5 days | - | - |
-| Phase 5: Multi-Environment | 🔴 Not Started | 2-3 days | - | - |
-| Phase 6: Foundation Complete | 🔴 Not Started | 2-3 days | - | - |
-| Phase 7: Cleanup & Documentation | 🔴 Not Started | 1-2 days | - | - |
+| ADR Updates | 🟢 Complete | 1 day | 2024-12-12 | 2024-12-12 |
+| Phase 1: Cleanup Workspace | 🟡 In Progress | 1 day | 2024-12-12 | - |
+| Phase 2: Deploy to Production | 🔴 Not Started | 1 day | - | - |
+| Phase 3: Documentation | 🔴 Not Started | 1 day | - | - |
 
 **Legend**: 🔴 Not Started | 🟡 In Progress | 🟢 Complete | 🔵 Blocked
 
 ---
 
+## Architecture Decision (December 12, 2025)
+
+**Major Simplification**: Abandoned complex layered architecture in favor of simple two-environment approach.
+
+### What Changed
+
+**Old Approach** (ADR-003, complex implementation plan):
+- Three layers: Foundation, Platform, Application
+- Multiple sync waves and ArgoCD Projects
+- Separate directory structure in `argocd/applications/`
+- ArgoCD for all environments including development
+
+**New Approach** (Updated ADR-002):
+- **Development**: k3d cluster, NO ArgoCD, kubectl apply directly
+- **Production**: Talos cluster, WITH ArgoCD for GitOps
+- **No staging**: Removed for simplicity
+- All manifests in `k8s-manifests/` with base/overlays
+- ArgoCD config in `argocd/` points to `k8s-manifests/overlays/production`
+
+### Rationale
+
+- **Homelab scale**: Complex layering is over-engineered for single administrator
+- **Operational simplicity**: Fewer moving parts, easier to maintain
+- **Development speed**: Fast iteration with k3d and kubectl
+- **Production safety**: GitOps provides audit trail and automation where it matters
+
+---
+
 ## Current State Verification
 
-**Verified on**: December 11, 2025
+**Verified on**: December 12, 2025
 
-### ✅ What Exists
+### ✅ What Exists and Works
+- [x] ArgoCD installed and running on production cluster
 - [x] `argocd/bootstrap.sh` - ArgoCD installation script
-- [x] `argocd/root-app.yaml` - Root app-of-apps configuration
-- [x] `argocd/projects/homelab.yaml` - Permissive project definition
-- [x] `k8s-manifests/base/podinfo/` - Podinfo deployment and service manifests
-- [x] `k8s-manifests/overlays/` - Environment overlays (development, staging, production)
-- [x] `argocd/applications/` - Empty directory structure (base/overlays exist)
+- [x] `argocd/root-app.yaml` - App-of-apps configuration
+- [x] `argocd/projects/homelab.yaml` - ArgoCD project
+- [x] `argocd/apps/podinfo-dev.yaml` - Application manifest (needs update)
+- [x] `k8s-manifests/base/podinfo/` - Podinfo base manifests
+- [x] `k8s-manifests/overlays/development/` - Development overlay
+- [x] `k8s-manifests/overlays/production/` - Production overlay
 
-### ✅ Phase 0 Additions (December 12, 2025)
-- [x] `argocd/apps/` - Directory created for Application manifests
-- [x] `argocd/apps/podinfo-dev.yaml` - Podinfo Application manifest
+### ⚠️ What Needs Cleanup
+- [ ] `argocd/applications/` - Entire directory tree (complex layered structure not being used)
+- [ ] `k8s-manifests/overlays/staging/` - Staging overlay (staging environment removed)
+- [ ] `argocd/apps/podinfo-dev.yaml` - Points to development, should point to production
 
-### ❌ What's Still Missing
-- [ ] `argocd/projects/foundation.yaml` - Foundation layer project
-- [ ] `argocd/projects/platform.yaml` - Platform layer project
-- [ ] `argocd/projects/applications.yaml` - Application layer project
+### ✅ Updated Documentation
+- [x] ADR-002 updated to reflect simplified architecture
+- [x] ADR-003 marked as superseded
+- [x] IMPLEMENTATION_PLAN.md replaced with simplified version
+- [ ] IMPLEMENTATION_STATUS.md (this file) updated
+- [ ] argocd/README.md needs update
+- [ ] k8s-manifests/README.md needs update
 
-### ✅ Critical Gap Resolved
-**Root-app now has `argocd/apps/` directory with Podinfo Application → Ready for deployment**
+---
+
+## Phase Progress
+
+### ✅ ADR Updates (Complete)
+
+**Completed**: December 12, 2025
+
+**What Was Done**:
+- Updated ADR-002 to remove staging environment
+- Updated ADR-002 to clarify dev=k3d/no-argocd, prod=talos/argocd
+- Updated ADR-002 directory structure to show ArgoCD points to k8s-manifests
+- Marked ADR-003 as "Superseded" - not implementing layered architecture
+- Created simplified IMPLEMENTATION_PLAN.md (archived old one as .old.md)
+
+**Files Modified**:
+- `/workspace/docs/reference/architecture-decision-records/ADR-002-gitops-argocd-deployment-strategy.md`
+- `/workspace/docs/reference/architecture-decision-records/ADR-003-layered-argocd-structure.md`
+- `/workspace/IMPLEMENTATION_PLAN.md` (replaced)
+- `/workspace/IMPLEMENTATION_PLAN.old.md` (archived)
+
+---
+
+### 🟡 Phase 1: Cleanup Workspace (In Progress)
+
+**Started**: December 12, 2025
+
+**Checklist**:
+- [ ] Remove `argocd/applications/` directory
+- [ ] Remove `k8s-manifests/overlays/staging/` directory
+- [ ] Rename `argocd/apps/podinfo-dev.yaml` to `podinfo-production.yaml`
+- [ ] Update Application name to `podinfo-production`
+- [ ] Update Application path to `k8s-manifests/overlays/production`
+- [ ] Verify `kustomize build k8s-manifests/overlays/production` works
+- [ ] Verify `kustomize build k8s-manifests/overlays/development` works
+
+**Commands to Run**:
+```bash
+# Remove unused directories
+rm -rf argocd/applications/
+rm -rf k8s-manifests/overlays/staging/
+
+# Rename and update ArgoCD Application
+mv argocd/apps/podinfo-dev.yaml argocd/apps/podinfo-production.yaml
+# Then edit the file to update name and path
+
+# Validate kustomize builds
+kustomize build k8s-manifests/overlays/production
+kustomize build k8s-manifests/overlays/development
+```
+
+---
+
+### 🔴 Phase 2: Deploy to Production (Not Started)
+
+**Status**: Waiting for Phase 1 completion
+
+**Checklist**:
+- [ ] Commit and push all changes to GitHub
+- [ ] Delete old `podinfo-development` Application from cluster
+- [ ] Apply new `podinfo-production` Application
+- [ ] Monitor sync in ArgoCD UI
+- [ ] Verify podinfo pods running
+- [ ] Verify service accessible
+- [ ] Check for orphaned resources
+
+---
+
+### 🔴 Phase 3: Documentation (Not Started)
+
+**Status**: Waiting for Phase 2 completion
+
+**Checklist**:
+- [ ] Update `argocd/README.md`
+- [ ] Update `k8s-manifests/README.md`
+- [ ] Update root `README.md`
+- [ ] Update this IMPLEMENTATION_STATUS.md to mark complete
+- [ ] Verify all examples work
+- [ ] Remove references to staging everywhere
 
 ---
 
 ## Next Actions
 
-### Immediate Next Step (Phase 0)
+### Immediate Next Step
 
-**Goal**: Get current setup working before refactoring
+**Goal**: Complete Phase 1 cleanup
 
 **Tasks**:
-1. Create `argocd/apps/` directory
-2. Create `argocd/apps/podinfo-dev.yaml` Application manifest
-3. Run bootstrap script: `./argocd/bootstrap.sh`
-4. Verify Podinfo deploys successfully
-5. Document working baseline
+1. Delete `argocd/applications/` directory
+2. Delete `k8s-manifests/overlays/staging/` directory
+3. Update `argocd/apps/podinfo-dev.yaml`:
+   - Rename to `podinfo-production.yaml`
+   - Change name field to `podinfo-production`
+   - Change path to `k8s-manifests/overlays/production`
+4. Validate kustomize builds
+5. Commit changes
 
-**Expected Outcome**: Working Podinfo deployment via ArgoCD app-of-apps pattern
+**Expected Outcome**: Clean workspace ready for production deployment
 
-**Validation**:
+---
+
+## Validation Commands
+
 ```bash
-# Check ArgoCD is running
+# Verify directory cleanup
+ls argocd/applications/  # Should not exist
+ls k8s-manifests/overlays/staging/  # Should not exist
+ls argocd/apps/  # Should show podinfo-production.yaml
+
+# Verify kustomize builds
+kustomize build k8s-manifests/overlays/production
+kustomize build k8s-manifests/overlays/development
+
+# Verify ArgoCD state (after Phase 2)
+kubectl get application -n argocd
 kubectl get pods -n argocd
-
-# Check root-app exists
-kubectl get application root-app -n argocd
-
-# Check podinfo Application exists
-kubectl get application podinfo-development -n argocd
-
-# Check podinfo pods are running
-kubectl get pods -l app=podinfo
+kubectl get pods  # Should show podinfo
 ```
-
----
-
-## Phase Checkpoints
-
-### Phase 0 Complete When:
-- [x] `argocd/apps/` directory exists
-- [x] Podinfo Application manifest created
-- [x] Bootstrap script runs successfully (ArgoCD was already installed)
-- [x] Podinfo pods are running and healthy ✅ 2 pods running
-- [x] Can access Podinfo service ✅ Service accessible on NodePort 30989
-- [x] Baseline documented
-
-### Phase 1 Complete When:
-- [ ] `argocd/applications/` directory structure populated with layered kustomize manifests
-- [ ] `argocd/apps/` directory created with Application manifests
-- [ ] Three new ArgoCD Projects defined (foundation, platform, applications)
-- [ ] Placeholder Application manifests created for development
-- [ ] All kustomization.yaml files have valid syntax
-- Structure documented in argocd/applications/README.md
-
-### Phase 2 Complete When:
-- [ ] Podinfo manifests copied to `argocd/applications/applications/base/podinfo/`
-- [ ] Podinfo manifests copied to `argocd-applications/applications/base/podinfo/`
-- [ ] Environment overlays created for all environments
-- [ ] Application layer ArgoCD Application updated and deployed
-- [ ] New Podinfo deployment verified working
-- [ ] Old Podinfo deployment removed
-- [ ] Migration pattern documented
-
----
-
-## Blockers & Risks
-
-**Current Blockers**: None
-
-**Identified Risks**:
-- Kubernetes cluster not available or not accessible
-- ArgoCD installation issues in bootstrap script
-- Network connectivity to GitHub repository
-- Kustomize not installed or wrong version
-
-**Mitigation**:
-- Verify cluster access before starting: `kubectl cluster-info`
-- Test ArgoCD CLI is available: `argocd version`
-- Verify kustomize installed: `kustomize version`
-- Ensure GitHub repo is accessible: `git remote -v`
 
 ---
 
@@ -132,85 +200,55 @@ kubectl get pods -l app=podinfo
 
 | Date | Phase | Decision | Rationale |
 |------|-------|----------|-----------|
-| 2024-12-11 | Planning | Adopt incremental phased approach | Lower risk, faster feedback, rollback capability |
-| 2024-12-11 | Planning | Add Phase 0 for baseline | Prove current setup works before refactoring |
-| 2024-12-11 | Planning | Split Foundation layer into two phases | Namespaces first (simple), RBAC/policies later (complex) |
-| 2024-12-11 | Planning | Start platform with observability only | Defer Istio, External-Secrets to future iterations |
+| 2024-12-12 | Planning | Abandon layered architecture (ADR-003) | Over-engineered for homelab scale |
+| 2024-12-12 | Planning | Remove staging environment | Unnecessary complexity, limited hardware |
+| 2024-12-12 | Planning | ArgoCD only for production | Development needs fast iteration, not GitOps |
+| 2024-12-12 | Planning | Keep manifests in k8s-manifests/ | Single source of truth, simpler structure |
 
 ---
 
-## Notes & Learnings
+## Lessons Learned
 
-*(To be updated as implementation progresses)*
+### From Phase 0 (Old Approach)
 
-### Phase 0 Notes
-**Completed**: December 12, 2025
+**Problem**: Deployed `podinfo-development` to production cluster via ArgoCD
+- This violated ADR-002 principle: development should use k3d without ArgoCD
+- Created confusion about which cluster and which overlay to use
 
-**What Was Done**:
-- Created `argocd/apps/` directory (critical missing piece)
-- Created `argocd/apps/podinfo-dev.yaml` Application manifest
-  - Points to existing `k8s-manifests/overlays/development` kustomize structure
-  - Uses `homelab` ArgoCD project
-  - Configured with automated sync (prune and selfHeal enabled)
-  - Deploys to `default` namespace
-- Fixed `k8s-manifests/base/kustomization.yaml` to include podinfo resources
+**Resolution**: Simplified architecture to be explicit:
+- k3d cluster = development = kubectl only
+- Talos cluster = production = ArgoCD only
 
-**Key Decisions**:
-- Used descriptive name `podinfo-development` instead of generic name
-- Enabled automated sync for development environment (low risk)
-- Added proper finalizers and labels for ArgoCD management
+### From Complex Layered Design
 
-**Issues Encountered & Resolved**:
-1. **Git Sync Issue**: Initial deployment failed because changes weren't committed to Git
-   - ArgoCD pulls from repository, not local filesystem
-   - Solution: Committed and pushed changes to GitHub
-2. **Cached Error**: root-app had cached error about missing `argocd/apps/` directory
-   - Solution: Deleted and recreated root-app to clear cache
-3. **Empty Kustomize Build**: Base kustomization.yaml had all resources commented out
-   - Solution: Uncommented resources section and added `podinfo/` reference
-   - This was the critical fix that enabled actual resource deployment
+**Problem**: ADR-003 proposed foundation/platform/application layers
+- Too complex for single administrator homelab
+- Adds operational overhead without clear benefit
+- Harder to onboard and maintain
 
-**Validation Results**:
-✅ ArgoCD running (7 pods in argocd namespace)
-✅ root-app: Synced and Healthy
-✅ podinfo-development Application: Synced and Healthy
-✅ Podinfo deployment: 2 pods running
-✅ Podinfo service: Accessible on NodePort 30989
-
-**Files Created/Modified**:
-- `/workspace/argocd/apps/` (directory)
-- `/workspace/argocd/apps/podinfo-dev.yaml` (Application manifest)
-- `/workspace/k8s-manifests/base/kustomization.yaml` (fixed resources section)
-- `/workspace/IMPLEMENTATION_STATUS.md` (updated with progress)
-
-**Commits**:
-- `1fac958` - Initial Phase 0 implementation
-- `34fad4a` - Fixed kustomization to include podinfo resources
-
-### Phase 1 Notes
-- TBD
-
-### Phase 2 Notes
-- TBD
+**Resolution**: Flat structure in k8s-manifests with base/overlays
+- Simpler mental model
+- Easier to add applications
+- Less ArgoCD complexity
 
 ---
 
 ## Resources
 
-- **Full Implementation Plan**: [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md)
-- **Architecture Decision**: [ADR-003](docs/reference/architecture-decision-records/ADR-003-layered-argocd-structure.md)
-- **ArgoCD Documentation**: https://argo-cd.readthedocs.io/
-- **Kustomize Documentation**: https://kustomize.io/
+- **Implementation Plan**: [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md)
+- **Simplified Architecture**: [ADR-002](docs/reference/architecture-decision-records/ADR-002-gitops-argocd-deployment-strategy.md)
+- **Superseded Design**: [ADR-003](docs/reference/architecture-decision-records/ADR-003-layered-argocd-structure.md)
+- **Old Implementation Plan**: [IMPLEMENTATION_PLAN.old.md](IMPLEMENTATION_PLAN.old.md) (archived)
 
 ---
 
 ## How to Use This Document
 
-1. **Before starting a phase**: Review the phase details in IMPLEMENTATION_PLAN.md
-2. **While working**: Update status in the Quick Status Overview table
-3. **After completing tasks**: Check off items in Phase Checkpoints
-4. **When blocked**: Add to Blockers & Risks section
-5. **After phase completion**: Update Decision Log and Notes & Learnings
-6. **Update dates**: Keep Start Date and Completion Date current
+1. **Check current phase**: See Quick Status Overview
+2. **Review progress**: Check phase checklists
+3. **Run next actions**: Follow immediate next step
+4. **Update status**: Mark items complete as you go
+5. **Document decisions**: Add to Decision Log
+6. **Capture learnings**: Update Lessons Learned
 
 This document serves as the **living status tracker** for the implementation. Keep it updated!

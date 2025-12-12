@@ -1,19 +1,25 @@
 # ADR-002: GitOps and ArgoCD Deployment Strategy
 
 **Status**: Accepted
-**Date**: 2025-12-09
+
+**Date**: 2025-12-09 (Updated: 2025-12-12)
+
 **Decision Makers**: Homelab Administrator
+
 **Technical Story**: Establishing GitOps-based application deployment strategy for homelab Kubernetes clusters
 
 ## Context
 
-The Kubernetes homelab infrastructure includes multiple environments (production, staging, development) that require consistent, auditable, and automated deployment workflows. As the homelab grows, manual `kubectl apply` commands become error-prone and lack proper change tracking. A GitOps approach provides declarative infrastructure management with version control as the single source of truth.
+The Kubernetes homelab infrastructure has two distinct environments with different operational needs:
+
+1. **Development**: Fast iteration, frequent changes, learning and experimentation
+2. **Production**: Stable deployments, audit trail, automated consistency
 
 Key requirements:
 
-- Automated deployment from git repository on merge to main branch
-- Self-healing capabilities to maintain desired state
-- Support for multiple environments (production, staging, development)
+- Automated deployment from git repository for production workloads
+- Self-healing capabilities to maintain desired state in production
+- Fast local development workflow without GitOps overhead
 - Simplified deployment workflow suitable for a single administrator
 - Integration with existing Kustomize manifest structure
 - Minimal operational overhead for homelab context
@@ -22,12 +28,12 @@ The manifests are organized using Kustomize with base configurations and environ
 
 ## Decision
 
-We will implement a **GitOps workflow using ArgoCD** with environment-specific deployment strategies:
+We will implement **two distinct deployment strategies** based on environment:
 
 ### 1. **Production Environment - Full GitOps with ArgoCD**
 
-**Cluster**: Talos bare metal (`k8s-homelab-production`)
-**ArgoCD**: YES, fully deployed and configured
+**Cluster**: Talos bare metal (`k8s-homelab-production`)  
+**ArgoCD**: YES, fully deployed and configured  
 **Purpose**: Real workloads, always-on applications
 
 Configuration:
@@ -35,15 +41,15 @@ Configuration:
 - ArgoCD installed in `argocd` namespace
 - Applications managed via app-of-apps pattern
 - Source repository: `https://github.com/dr3dr3/k8s-homelab-admin.git`
-- Target overlay: `k8s-manifests/overlays/production`
+- Target path: `k8s-manifests/overlays/production`
 - Auto-sync enabled on merge to `main` branch
 - Self-healing enabled (auto-revert manual changes)
 - Pruning enabled (auto-delete resources removed from git)
 
 ### 2. **Development Environment - Direct kubectl (No ArgoCD)**
 
-**Cluster**: k3d local (developer workstation)
-**ArgoCD**: NO
+**Cluster**: k3d local (developer workstation)  
+**ArgoCD**: NO  
 **Purpose**: Fast iteration and testing before committing changes
 
 Workflow:
@@ -52,29 +58,15 @@ Workflow:
 - Allows quick testing without git commits
 - Rapid feedback loop for manifest changes
 - No GitOps overhead for ephemeral development cluster
+- Can tear down and recreate cluster frequently
 
-### 3. **Staging Environment - Optional, Namespace-Based**
-
-**Cluster**: Same as production (Talos bare metal)
-**ArgoCD**: Shared with production (same instance)
-**Purpose**: Pre-production validation (when needed)
-
-Implementation:
-
-- Additional ArgoCD Application manifest: `argocd/apps/podinfo-staging.yaml`
-- Target overlay: `k8s-manifests/overlays/staging`
-- Deploys to `staging` namespace within production cluster
-- Uses same GitOps workflow as production
-- Can be added later if/when needed
-
-### 4. **App-of-Apps Pattern**
+### 3. **App-of-Apps Pattern**
 
 ArgoCD applications are managed using the app-of-apps pattern:
 
 ```text
 root-app (watches argocd/apps/*.yaml)
-├── podinfo-production (→ k8s-manifests/overlays/production/podinfo)
-├── podinfo-staging (→ k8s-manifests/overlays/staging/podinfo) [optional]
+├── podinfo-production (→ k8s-manifests/overlays/production)
 └── [future applications]
 ```
 
@@ -83,8 +75,9 @@ Benefits:
 - Single `kubectl apply -f argocd/root-app.yaml` bootstraps entire system
 - New applications added by creating YAML files in `argocd/apps/`
 - ArgoCD itself manages application lifecycle via GitOps
+- All ArgoCD Application manifests point to paths in `k8s-manifests/overlays/production`
 
-### 5. **Sync Policy Configuration**
+### 4. **Sync Policy Configuration**
 
 All production applications use:
 
@@ -94,14 +87,40 @@ All production applications use:
 - **syncOptions.ServerSideApply**: `true` - Use server-side apply for production
 - **targetRevision**: `main` - Trunk-based development workflow
 
-### 6. **Kustomize Integration**
+### 5. **Kustomize Integration**
 
 ArgoCD has native Kustomize support:
 
 - Automatically detects `kustomization.yaml` files
-- Runs `kustomize build` on the specified overlay directory
+- Runs `kustomize build` on the specified overlay directory (e.g., `k8s-manifests/overlays/production`)
 - Follows base references (e.g., `../../base`) automatically
-- No changes needed to existing Kustomize structure
+- No changes needed to existing Kustomize structure in `k8s-manifests/`
+
+### 6. **Directory Structure**
+
+```text
+k8s-manifests/               # All Kubernetes manifests
+├── base/                    # Base configurations
+│   └── podinfo/
+│       ├── deployment.yaml
+│       ├── service.yaml
+│       └── kustomization.yaml
+└── overlays/
+    ├── development/         # For k3d cluster (kubectl apply -k)
+    │   └── kustomization.yaml
+    └── production/          # For Talos cluster (ArgoCD)
+        └── kustomization.yaml
+
+argocd/                      # ArgoCD configuration only
+├── bootstrap.sh             # Installation script
+├── root-app.yaml            # App-of-apps root
+├── README.md
+├── projects/
+│   └── homelab.yaml         # ArgoCD project definition
+└── apps/                    # ArgoCD Application manifests
+    ├── podinfo-production.yaml
+    └── [additional apps]
+```
 
 ## Consequences
 
@@ -123,37 +142,38 @@ ArgoCD has native Kustomize support:
    - Ensures production matches git repository
 
 4. **Simplicity for Homelab**:
-   - Single ArgoCD instance for production
-   - No complex multi-cluster management needed
+   - Single ArgoCD instance for production only
+   - No complex multi-cluster or multi-environment management
    - Development stays simple with direct kubectl
-   - Staging optional, can be added incrementally
+   - Production gets full GitOps benefits
 
 5. **Developer Experience**:
    - Fast local development with k3d (no GitOps overhead)
-   - Test changes before committing
-   - Production deployment automatic after merge
+   - Test changes locally before committing
+   - Production deployment automatic after merge to main
+   - Clear separation: k3d = dev, Talos = production
 
 6. **Scalability**:
    - Easy to add new applications (create YAML in `argocd/apps/`)
    - App-of-apps pattern scales to many applications
-   - Can add staging or additional environments later
+   - Can add additional environments later if needed
 
 ### Negative
 
 1. **Learning Curve**:
    - Administrator needs to understand ArgoCD concepts
-   - Different workflows for dev (kubectl) vs production (git)
+   - Different workflows for dev (kubectl) vs production (GitOps)
    - Mitigation: Comprehensive documentation in `argocd/README.md`
 
 2. **ArgoCD Dependency**:
    - Production cluster depends on ArgoCD availability
    - If ArgoCD fails, deployments are blocked
-   - Mitigation: Can always fall back to `kubectl apply -k` in emergencies
+   - Mitigation: Can always fall back to `kubectl apply -k k8s-manifests/overlays/production` in emergencies
 
 3. **Development-Production Parity**:
    - Dev environment doesn't test GitOps workflow
    - Potential for issues that only appear in production
-   - Mitigation: Use staging environment for pre-production testing when needed
+   - Mitigation: Homelab scale makes this acceptable; can test ArgoCD sync locally if needed
 
 4. **Overhead for Small Changes**:
    - Small production changes require git commit/push/merge
@@ -202,17 +222,28 @@ argocd/
 ├── projects/
 │   └── homelab.yaml              # ArgoCD project definition
 └── apps/
-    ├── podinfo-production.yaml   # Production applications
+    ├── podinfo-production.yaml   # Production application
     └── [additional apps]          # Add more as needed
 ```
+
+**Note**: All ArgoCD Application manifests in `argocd/apps/` point to paths in `k8s-manifests/overlays/production`.
 
 ### Adding New Applications
 
 1. Create base manifests in `k8s-manifests/base/myapp/`
-2. Create overlay in `k8s-manifests/overlays/production/myapp/`
-3. Create ArgoCD application in `argocd/apps/myapp-production.yaml`
+2. Create production overlay in `k8s-manifests/overlays/production/` (and optionally development overlay)
+3. Create ArgoCD application in `argocd/apps/myapp-production.yaml` pointing to `k8s-manifests/overlays/production`
 4. Commit and push to `main` branch
-5. ArgoCD automatically deploys the new application
+5. ArgoCD automatically deploys the new application to production cluster
+
+### Developing Applications
+
+1. Create/update manifests in `k8s-manifests/base/myapp/`
+2. Create development overlay in `k8s-manifests/overlays/development/`
+3. Test locally on k3d cluster: `kubectl apply -k k8s-manifests/overlays/development`
+4. Iterate and test until satisfied
+5. Commit changes and merge to `main`
+6. ArgoCD automatically deploys to production
 
 ### Accessing ArgoCD UI
 
@@ -240,23 +271,32 @@ kubectl apply -k k8s-manifests/overlays/production
 # To make permanent: disable auto-sync or commit to git
 ```
 
+### Local Development Workflow
+
+```bash
+# Start k3d cluster
+k3d cluster create dev
+
+# Deploy application for testing
+kubectl apply -k k8s-manifests/overlays/development
+
+# Make changes to manifests
+# Test changes
+kubectl apply -k k8s-manifests/overlays/development
+
+# When satisfied, commit and push
+git add .
+git commit -m "Update application"
+git push origin main
+
+# ArgoCD automatically deploys to production cluster
+```
+
 ## Alternatives Considered
 
-### 1. **FluxCD Instead of ArgoCD**
+### 1. **ArgoCD in Development Environment**
 
-**Description**: Use FluxCD for GitOps instead of ArgoCD.
-
-**Rejected because**:
-
-- ArgoCD has better UI/UX for visualizing application state
-- App-of-apps pattern is more straightforward in ArgoCD
-- ArgoCD has stronger community adoption and documentation
-- For homelab with single administrator, ArgoCD UI is valuable
-- Both are excellent choices; ArgoCD selected for UI benefits
-
-### 2. **ArgoCD in All Environments (Including Dev)**
-
-**Description**: Install ArgoCD in k3d development cluster for consistency.
+**Description**: Install ArgoCD in k3d development cluster for environment parity.
 
 **Rejected because**:
 
@@ -264,20 +304,10 @@ kubectl apply -k k8s-manifests/overlays/production
 - Slows down development iteration (requires git commits)
 - k3d clusters are ephemeral and recreated frequently
 - Direct `kubectl apply -k` is faster for development
-- Production-development parity not critical for homelab
+- Environment parity not critical for homelab scale
+- Can always test GitOps workflow on production cluster if needed
 
-### 3. **Separate ArgoCD Instances per Environment**
-
-**Description**: Deploy separate ArgoCD in production, staging, and development clusters.
-
-**Rejected because**:
-
-- Excessive complexity for homelab scale
-- Multiple ArgoCD instances to maintain and upgrade
-- No clear benefit over single instance or no ArgoCD in dev
-- Staging can share production cluster and ArgoCD instance
-
-### 4. **Manual kubectl apply for All Environments**
+### 2. **Manual kubectl apply for All Environments**
 
 **Description**: Skip GitOps entirely, use manual deployments everywhere.
 
@@ -287,9 +317,9 @@ kubectl apply -k k8s-manifests/overlays/production
 - Configuration drift over time
 - Manual errors likely in production
 - Doesn't scale as applications grow
-- GitOps benefits outweigh minimal overhead
+- GitOps benefits outweigh minimal overhead for production
 
-### 5. **GitHub Actions CI/CD**
+### 3. **GitHub Actions CI/CD**
 
 **Description**: Use GitHub Actions to run `kubectl apply` on merge to main.
 
@@ -301,13 +331,25 @@ kubectl apply -k k8s-manifests/overlays/production
 - ArgoCD provides continuous reconciliation, not just on-merge deployment
 - ArgoCD UI valuable for monitoring and debugging
 
+### 4. **Staging Environment**
+
+**Description**: Add a staging environment for pre-production testing.
+
+**Rejected because**:
+
+- Unnecessary complexity for single-administrator homelab
+- Limited hardware resources (single bare-metal cluster)
+- Can test on development k3d cluster before pushing to production
+- Adds maintenance overhead without significant benefit
+- Can be added later if needs change
+
 ## References
 
 - [ArgoCD Documentation](https://argo-cd.readthedocs.io/)
 - [ArgoCD App-of-Apps Pattern](https://argo-cd.readthedocs.io/en/stable/operator-manual/cluster-bootstrapping/)
 - [Kustomize Integration](https://argo-cd.readthedocs.io/en/stable/user-guide/kustomize/)
 - [GitOps Principles](https://opengitops.dev/)
-- [Homelab k8s-manifests Structure](../../k8s-manifests/README.md)
+- [k3d Documentation](https://k3d.io/)
 
 ## Related Decisions
 
@@ -317,4 +359,4 @@ kubectl apply -k k8s-manifests/overlays/production
 
 ---
 
-**Last Updated**: 2025-12-09
+**Last Updated**: 2025-12-12
