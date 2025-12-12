@@ -13,11 +13,8 @@ commonAnnotations:
   docs: "See /workspace/k8s-manifests/README.md"
 
 # List all resources in the base
-# resources:
-#   - namespace.yaml
-#   - path/to/deployment.yaml
-#   - path/to/service.yaml
-#   - path/to/configmap.yaml
+resources:
+  - podinfo/
 
 # Configure the image tags (optional)
 # images:
