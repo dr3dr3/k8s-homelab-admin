@@ -32,3 +32,43 @@ spec:
           env:
             - name: PODINFO_UI_MESSAGE
               value: "Hello from production!"
+          # Startup probe - allows the app time to initialize before liveness/readiness checks begin
+          # This is especially important for applications with long startup times
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: 9898
+            initialDelaySeconds: 0
+            periodSeconds: 5
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 12  # Allow up to 60 seconds (12 * 5s) for startup
+          # Liveness probe - checks if the container is running properly
+          # Failure causes the container to be restarted
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 9898
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3  # Allow 3 consecutive failures before restart
+          # Readiness probe - checks if the container is ready to accept traffic
+          # Failure removes the pod from service endpoints
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 9898
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3  # Allow 3 consecutive failures before removing from service
+          resources:
+            requests:
+              cpu: 100m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
